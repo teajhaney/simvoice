@@ -7,15 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { LooadingSpinner } from "@/util/utils";
 type SignupFormData = z.infer<typeof signUpSchema>;
 const SignUp = () => {
   const navigate = useRouter();
-  //   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    clearErrors,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signUpSchema),
   });
@@ -23,19 +26,20 @@ const SignUp = () => {
   const onSubmit = (data: SignupFormData) => {
     console.log("form submitted", data);
     try {
-      //   setIsLoading(true);
+      setIsLoading(true);
       // Simulate a network request
       setTimeout(() => {
         console.log("Form submitted successfully");
         reset();
-        // setIsLoading(false);
+        setIsLoading(false);
       }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
-      //   setIsLoading(false);
+      setIsLoading(false);
     }
   };
   const inputDiv = "flex flex-col gap-2";
+  const errorStyles = "text-red500 text-sm";
   const lableStyles = "block text-sm lg:text-md ";
   const inputStyles =
     "w-full border-1 border-gray200 p-3 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
@@ -50,8 +54,40 @@ const SignUp = () => {
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full md:w-150 lg:w-200 2xl:w-250 space-y-5">
         <h1 className="center font-bold text-3xl">Create a free account</h1>
         <p className="center text-accent">
-          Gain access to more features with an Invoice-Generator.com account.
+          Gain access to more features with an Simvoice account.
         </p>
+        {/* first name and last name */}
+        <div className="flex flex-col gap-5 lg:flex-row">
+          <div className={clsx(inputDiv, "w-full")}>
+            <label htmlFor="email" className={lableStyles}>
+              First Name
+            </label>
+            <input
+              type="firstName"
+              id="firstName"
+              {...register("firstName")}
+              className={inputStyles}
+            />
+            {errors.firstName && (
+              <p className={errorStyles}>{errors.firstName.message}</p>
+            )}
+          </div>
+          <div className={clsx(inputDiv, "w-full")}>
+            <label htmlFor="lastName" className={lableStyles}>
+              Last Name
+            </label>
+            <input
+              type="lastName"
+              id="lastName"
+              {...register("lastName")}
+              className={inputStyles}
+            />
+            {errors.lastName && (
+              <p className={errorStyles}>{errors.lastName.message}</p>
+            )}
+          </div>
+        </div>
+        {/* email */}
         <div className={inputDiv}>
           <label htmlFor="email" className={lableStyles}>
             Email
@@ -63,12 +99,13 @@ const SignUp = () => {
             className={inputStyles}
           />
           {errors.email && (
-            <p className="text-red500 text-sm">{errors.email.message}</p>
+            <p className={errorStyles}>{errors.email.message}</p>
           )}
         </div>
+        {/* password */}
         <div className={inputDiv}>
-          <label htmlFor="email" className={lableStyles}>
-            Passoword
+          <label htmlFor="password" className={lableStyles}>
+            Password
           </label>
 
           <input
@@ -78,28 +115,60 @@ const SignUp = () => {
             className={inputStyles}
           />
           {errors.password && (
-            <p className="text-red500 text-sm">{errors.password.message}</p>
+            <p className={errorStyles}>{errors.password.message}</p>
           )}
         </div>
-        <div className="flex items-center space-x-2 text-white mt-4">
-          <input
-            type="checkbox"
-            {...register("agreeTerms")}
-            id="keepLoggedIn"
-            name="keepLoggedIn"
-            className="w-4 h-4  rounded "
-          />
-          <label
-            htmlFor="keepLoggedIn"
-            className={clsx(lableStyles, "text-accent")}>
-            I agree to the Terms of Service
+        {/* confirm password */}
+        <div className={inputDiv}>
+          <label htmlFor="confirmPassword" className={lableStyles}>
+            Confirm Password
           </label>
+
+          <input
+            type="password"
+            id="confirmPassword"
+            {...register("confirmPassword")}
+            className={inputStyles}
+          />
+          {errors.confirmPassword && (
+            <p className={errorStyles}>{errors.confirmPassword.message}</p>
+          )}
+        </div>
+        <div className={inputDiv}>
+          <div className="flex items-center space-x-2">
+            {" "}
+            <input
+              type="checkbox"
+              {...register("agreeTerms")}
+              id="agreeTerms"
+              name="agreeTerms"
+              className="w-4 h-4  rounded "
+              onChange={(e) => {
+                if (e.target.checked) {
+                  clearErrors("agreeTerms");
+                }
+              }}
+            />
+            <label
+              htmlFor="agreeTerms"
+              className={clsx(lableStyles, "text-accent")}>
+              I agree to the Terms of Service
+            </label>
+          </div>
+
+          {errors.agreeTerms && (
+            <p className={errorStyles}>{errors.agreeTerms.message}</p>
+          )}
         </div>
         <Button
           className="w-full bg-primary center rounded p-3 hover:shadow-[0px_4px_8px_#598392] cursor-pointer"
           onClick={() => {}}>
           {" "}
-          <p className="text-white">Sign in</p>
+          {isLoading ? (
+            <LooadingSpinner className="border-white h-6 w-6 border-dashed border-2" />
+          ) : (
+            <p className="text-white">Sign up</p>
+          )}
         </Button>
 
         <p className="center text-sm">

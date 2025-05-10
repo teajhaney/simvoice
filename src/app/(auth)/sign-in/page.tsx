@@ -7,12 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
-// import { useState } from "react";
+import { useState } from "react";
+import { LooadingSpinner } from "@/util/utils";
 
 type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
   const navigate = useRouter();
-  //   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -25,16 +26,16 @@ const SignIn = () => {
   const onSubmit = (data: SigninFormData) => {
     console.log("form submitted", data);
     try {
-      //   setIsLoading(true);
+      setIsLoading(true);
       // Simulate a network request
       setTimeout(() => {
         console.log("Form submitted successfully");
         reset();
-        // setIsLoading(false);
+        setIsLoading(false);
       }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
-      //   setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -56,6 +57,7 @@ const SignIn = () => {
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full md:w-150 lg:w-200 2xl:w-250 space-y-5">
         <h1 className="center font-bold text-3xl">Sign In</h1>
         <p className="center text-accent">Welcome back</p>
+        {/* email */}
         <div className={inputDiv}>
           <label htmlFor="email" className={lableStyles}>
             Email
@@ -66,8 +68,11 @@ const SignIn = () => {
             {...register("email")}
             className={inputStyles}
           />
-          {errors.email && <p className="">{errors.email.message}</p>}
+          {errors.email && (
+            <p className={errorStyles}>{errors.email.message}</p>
+          )}
         </div>
+        {/* password */}
         <div className={inputDiv}>
           <div className="flex justify-between">
             <label htmlFor="email" className={lableStyles}>
@@ -83,8 +88,11 @@ const SignIn = () => {
             {...register("password")}
             className={inputStyles}
           />
-          {errors.password && <p className="">{errors.password.message}</p>}
+          {errors.password && (
+            <p className={errorStyles}>{errors.password.message}</p>
+          )}
         </div>
+        {/* checkbox for keep me logged in */}
         <div className="flex items-center space-x-2 text-white mt-4">
           <input
             type="checkbox"
@@ -98,13 +106,21 @@ const SignIn = () => {
             Keep me logged in
           </label>
         </div>
+        {/* sign in button */}
         <Button
+          type="submit"
           className="w-full bg-primary center rounded p-3 hover:shadow-[0px_4px_8px_#598392] cursor-pointer"
           onClick={() => {}}>
           {" "}
-          <p className="text-white">Sign in</p>
+          {isLoading ? (
+            <LooadingSpinner className="border-white h-6 w-6 border-dashed border-2" />
+          ) : (
+            <p className="text-white">Sign in</p>
+          )}
         </Button>
+        {/* google sign button */}
         <Button
+          type="button"
           className="self-center  border border-primary center rounded py-3 px-5 hover:shadow cursor-pointer gap-10 w-96"
           onClick={() => {}}>
           {" "}
@@ -125,7 +141,7 @@ const SignIn = () => {
             onClick={() => {
               navigate.push("/sign-up");
             }}>
-            Sign Up
+            Sign Up.
           </span>
         </p>
       </form>
