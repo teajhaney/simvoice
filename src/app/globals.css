@@ -11,11 +11,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: #124559;
+  --color-secondary: #598392;
+  --color-accent: #abd2fa;
+  --color-gray50: #f9fafb;
+  --color-gray100: #f3f4f6;
+  --color-gray200: #e5e7eb;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    /* --background: #0a0a0a; */
+    --background: #01161e;
     --foreground: #ededed;
   }
 }
@@ -36,7 +43,15 @@ body {
   .center-col {
     @apply flex flex-col justify-center items-center;
   }
+  .shadow {
+    @apply shadow-[0px_4px_8px_rgba(0,0,0,0.1)];
+  }
   /* .font-inter {
     font-family: var(--font-inter);
   } */
+}
+
+
+input[type="checkbox"] {
+  accent-color:var(--color-primary);
 }
