@@ -9,7 +9,13 @@ import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LooadingSpinner } from "@/util/utils";
+import {
+  errorStyles,
+  inputDiv,
+  inputStyles,
+  lableStyles,
+  LooadingSpinner,
+} from "@/util/utils";
 import { firebaseSignIn, firebaseSignOut } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
@@ -47,13 +53,6 @@ const SignIn = () => {
       setIsLoading(false);
     }
   };
-
-  const inputDiv = "flex flex-col gap-2";
-
-  const errorStyles = "text-red500 text-sm";
-  const lableStyles = "block text-sm lg:text-md ";
-  const inputStyles =
-    "w-full text-primary pl-10 border-1 border-gray200 p-3 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
 
   return (
     <main className="mx-3 2xl:mx-auto h-screen center-col gap-10">
@@ -168,6 +167,7 @@ const SignIn = () => {
             alt="google logo"
             width={24}
             height={24}
+            className="h-auto w-auto"
           />
           <p className="text-primary font-medium max-md:text-sm">
             Sign in with Google

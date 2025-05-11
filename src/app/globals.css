@@ -47,12 +47,12 @@ body {
   .shadow {
     @apply shadow-[0px_4px_8px_rgba(0,0,0,0.1)];
   }
+  
   /* .font-inter {
     font-family: var(--font-inter);
   } */
 }
 
-
 input[type="checkbox"] {
-  accent-color:var(--color-primary);
+  accent-color: var(--color-primary);
 }

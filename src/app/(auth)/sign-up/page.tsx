@@ -9,11 +9,18 @@ import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LooadingSpinner } from "@/util/utils";
+import {
+  errorStyles,
+  inputDiv,
+  inputStyles,
+  lableStyles,
+  LooadingSpinner,
+} from "@/util/utils";
 import { firebaseSignUp } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
+import { IoPersonOutline } from "react-icons/io5";
 //////
 
 type SignupFormData = z.infer<typeof signUpSchema>;
@@ -48,11 +55,7 @@ const SignUp = () => {
       setIsLoading(false);
     }
   };
-  const inputDiv = "flex flex-col gap-2";
-  const errorStyles = "text-red500 text-sm";
-  const lableStyles = "block text-sm lg:text-md ";
-  const inputStyles =
-    "w-full text-primary pl-10 border-1 border-gray200 p-3 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
+
   return (
     <main className="mx-3 2xl:mx-auto h-screen center-col gap-10">
       <h1>
@@ -72,12 +75,19 @@ const SignUp = () => {
             <label htmlFor="email" className={lableStyles}>
               First Name
             </label>
-            <input
-              type="firstName"
-              id="firstName"
-              {...register("firstName")}
-              className={inputStyles}
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <IoPersonOutline className="text-accent text-2xl" />
+              </div>
+
+              <input
+                type="firstName"
+                id="firstName"
+                {...register("firstName")}
+                className={inputStyles}
+              />
+            </div>
+
             {errors.firstName && (
               <p className={errorStyles}>{errors.firstName.message}</p>
             )}
@@ -86,12 +96,17 @@ const SignUp = () => {
             <label htmlFor="lastName" className={lableStyles}>
               Last Name
             </label>
-            <input
-              type="lastName"
-              id="lastName"
-              {...register("lastName")}
-              className={inputStyles}
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <IoPersonOutline className="text-accent text-2xl" />
+              </div>
+              <input
+                type="lastName"
+                id="lastName"
+                {...register("lastName")}
+                className={inputStyles}
+              />
+            </div>
             {errors.lastName && (
               <p className={errorStyles}>{errors.lastName.message}</p>
             )}
