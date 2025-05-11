@@ -71,6 +71,7 @@ const SignIn = () => {
             id="email"
             {...register("email")}
             className={inputStyles}
+            onFocus={() => setAuthError(null)}
           />
           {errors.email && (
             <p className={errorStyles}>{errors.email.message}</p>
@@ -91,6 +92,7 @@ const SignIn = () => {
             id="password"
             {...register("password")}
             className={inputStyles}
+            onFocus={() => setAuthError(null)}
           />
           {errors.password && (
             <p className={errorStyles}>{errors.password.message}</p>

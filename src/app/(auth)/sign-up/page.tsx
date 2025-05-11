@@ -20,8 +20,8 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-	  clearErrors,
-	reset
+    clearErrors,
+    reset,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signUpSchema),
   });
@@ -32,8 +32,8 @@ const SignUp = () => {
     try {
       await firebaseSignUp(data); // Call firebaseSignUp function with the form data
       console.log("User signed up successfully");
-		setIsLoading(false);
-		reset();
+      setIsLoading(false);
+      reset();
     } catch (error: any) {
       console.error("Error submitting form:", error);
       setAuthError(error.message); // Display Firebase error
@@ -100,6 +100,7 @@ const SignUp = () => {
             id="email"
             {...register("email")}
             className={inputStyles}
+            onFocus={() => setAuthError(null)}
           />
           {errors.email && (
             <p className={errorStyles}>{errors.email.message}</p>
@@ -116,6 +117,7 @@ const SignUp = () => {
             id="password"
             {...register("password")}
             className={inputStyles}
+            onFocus={() => setAuthError(null)}
           />
           {errors.password && (
             <p className={errorStyles}>{errors.password.message}</p>
