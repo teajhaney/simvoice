@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { signUpSchema } from "../zodSchema";
+import { signUpSchema } from "../../../lib/zodSchema";
 import { z } from "zod";
 
 import { useForm } from "react-hook-form";

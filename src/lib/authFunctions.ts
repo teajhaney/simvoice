@@ -5,15 +5,37 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { auth } from "./firebase";
-
+import { auth, db } from "./firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { SignupFormData, SigninFormData } from "@/types/authType";
 
 export const firebaseSignUp = async (formData: SignupFormData) => {
   try {
-    const { email, password } = formData;
+    const { email, password, firstName, lastName } = formData;
     // Create user with Firebase authentication
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    // Save user data to Firestore
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (firestoreError: any) {
+      console.error(
+        "Firestore error:",
+        firestoreError.code,
+        firestoreError.message
+      );
+      throw new Error(`Failed to save user data: ${firestoreError.message}`);
+    }
+    return user; // to be used later when needed
   } catch (error: any) {
     switch (error.code) {
       case "auth/email-already-in-use":
@@ -58,5 +80,19 @@ export const firebaseSignOut = async () => {
     await signOut(auth);
   } catch (error: any) {
     throw new Error(error.message);
+  }
+};
+
+// Fetch user data from Firestore
+export const fetchUserData = async (uid: string) => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error("User data not found.");
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user data: ${error.message}`);
   }
 };
