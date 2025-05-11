@@ -1,3 +1,11 @@
+"use client";
+
+import { initialiseAuth } from "@/stores/authStore";
+import { useEffect } from "react";
+
 export default function Home() {
-  return <div className="">hello</div>;
+  useEffect(() => {
+    initialiseAuth();
+  }, []);
+  return <div className="">hello page</div>;
 }

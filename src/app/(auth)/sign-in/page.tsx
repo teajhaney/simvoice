@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { signInSchema } from "../zodSchema";
 import { z } from "zod";
@@ -9,11 +10,13 @@ import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LooadingSpinner } from "@/util/utils";
+import { firebaseSignIn, firebaseSignOut } from "@/lib/authFunctions";
 
 type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -23,18 +26,19 @@ const SignIn = () => {
     resolver: zodResolver(signInSchema),
   });
 
-  const onSubmit = (data: SigninFormData) => {
+  const onSubmit = async (data: SigninFormData) => {
     console.log("form submitted", data);
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      // Simulate a network request
-      setTimeout(() => {
-        console.log("Form submitted successfully");
-        reset();
-        setIsLoading(false);
-      }, 2000);
-    } catch (error) {
+      await firebaseSignIn(data); // Call firebaseSignIn function with the form data
+      console.log("User signed in successfully");
+      setIsLoading(false);
+      firebaseSignOut();
+      reset();
+    } catch (error: any) {
       console.error("Error submitting form:", error);
+      setAuthError(error.message); // Display Firebase error
+    } finally {
       setIsLoading(false);
     }
   };
@@ -106,6 +110,10 @@ const SignIn = () => {
             Keep me logged in
           </label>
         </div>
+        {authError && (
+          <p className={errorStyles + " text-center"}>{authError}</p>
+        )}{" "}
+        {/* Display Firebase errors */}
         {/* sign in button */}
         <Button
           type="submit"
@@ -121,7 +129,7 @@ const SignIn = () => {
         {/* google sign button */}
         <Button
           type="button"
-          className="self-center  border border-primary center rounded py-3 px-5 hover:shadow cursor-pointer gap-10 w-96"
+          className="self-center  border border-primary center rounded py-3 px-5 hover:shadow cursor-pointer gap-10 w-full"
           onClick={() => {}}>
           {" "}
           <Image

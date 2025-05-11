@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { signUpSchema } from "../zodSchema";
 import { z } from "zod";
@@ -9,32 +10,34 @@ import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LooadingSpinner } from "@/util/utils";
+import { firebaseSignUp } from "@/lib/authFunctions";
 type SignupFormData = z.infer<typeof signUpSchema>;
 const SignUp = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-    clearErrors,
+	  clearErrors,
+	reset
   } = useForm<SignupFormData>({
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     console.log("form submitted", data);
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      // Simulate a network request
-      setTimeout(() => {
-        console.log("Form submitted successfully");
-        reset();
-        setIsLoading(false);
-      }, 2000);
-    } catch (error) {
+      await firebaseSignUp(data); // Call firebaseSignUp function with the form data
+      console.log("User signed up successfully");
+		setIsLoading(false);
+		reset();
+    } catch (error: any) {
       console.error("Error submitting form:", error);
+      setAuthError(error.message); // Display Firebase error
+    } finally {
       setIsLoading(false);
     }
   };
@@ -160,6 +163,11 @@ const SignUp = () => {
             <p className={errorStyles}>{errors.agreeTerms.message}</p>
           )}
         </div>
+        {authError && (
+          <p className={errorStyles + " text-center"}>{authError}</p>
+        )}{" "}
+        {/* Display Firebase errors */}
+        {/* sign up button */}
         <Button
           className="w-full bg-primary center rounded p-3 hover:shadow-[0px_4px_8px_#598392] cursor-pointer"
           onClick={() => {}}>
@@ -170,7 +178,6 @@ const SignUp = () => {
             <p className="text-white">Sign up</p>
           )}
         </Button>
-
         <p className="center text-sm">
           Already have an account? {"   "}
           <span
