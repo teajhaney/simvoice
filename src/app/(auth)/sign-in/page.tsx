@@ -11,12 +11,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LooadingSpinner } from "@/util/utils";
 import { firebaseSignIn, firebaseSignOut } from "@/lib/authFunctions";
+import { CiMail, CiLock } from "react-icons/ci";
+import { SlEye } from "react-icons/sl";
+import { HiOutlineEyeSlash } from "react-icons/hi2";
+////
 
 type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -48,7 +53,7 @@ const SignIn = () => {
   const errorStyles = "text-red500 text-sm";
   const lableStyles = "block text-sm lg:text-md ";
   const inputStyles =
-    "w-full border-1 border-gray200 p-3 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
+    "w-full text-primary pl-10 border-1 border-gray200 p-3 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
 
   return (
     <main className="mx-3 2xl:mx-auto h-screen center-col gap-10">
@@ -66,13 +71,19 @@ const SignIn = () => {
           <label htmlFor="email" className={lableStyles}>
             Email
           </label>
-          <input
-            type="email"
-            id="email"
-            {...register("email")}
-            className={inputStyles}
-            onFocus={() => setAuthError(null)}
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <CiMail className="text-accent text-2xl" />
+            </div>
+            <input
+              type="email"
+              id="email"
+              placeholder="Email"
+              {...register("email")}
+              className={inputStyles}
+              onFocus={() => setAuthError(null)}
+            />
+          </div>
           {errors.email && (
             <p className={errorStyles}>{errors.email.message}</p>
           )}
@@ -87,13 +98,31 @@ const SignIn = () => {
               Forget password?
             </p>
           </div>
-          <input
-            type="password"
-            id="password"
-            {...register("password")}
-            className={inputStyles}
-            onFocus={() => setAuthError(null)}
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <CiLock className="text-accent text-2xl" />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="Password"
+              {...register("password")}
+              className={inputStyles}
+              onFocus={() => setAuthError(null)}
+            />
+            <Button
+              type="button"
+              className="absolute inset-y-0 right-3 flex items-center "
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}>
+              {showPassword ? (
+                <SlEye className="text-accent text-2xl cursor-pointer" />
+              ) : (
+                <HiOutlineEyeSlash className="text-accent text-2xl cursor-pointer" />
+              )}
+            </Button>
+          </div>
           {errors.password && (
             <p className={errorStyles}>{errors.password.message}</p>
           )}
