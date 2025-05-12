@@ -17,7 +17,7 @@ import {
   ForgetPasswordFormData,
   UserData,
 } from "@/types/authType";
-import { authStoreActions } from "@/stores/authStore";
+import { useAuthStore } from "@/stores/authStore";
 
 export const firebaseSignUp = async (formData: SignupFormData) => {
   try {
@@ -39,8 +39,10 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
       };
       await setDoc(doc(db, "users", user.uid), userData);
       // Update Zustand store with user data
-      authStoreActions.setUserData(userData as UserData);
-      authStoreActions.setUser(user);
+      useAuthStore
+        .getState()
+        .authStoreActions.setUserData(userData as UserData);
+      useAuthStore.getState().authStoreActions.setUser(user);
     } catch (firestoreError: any) {
       console.error(
         "Firestore error:",
@@ -83,8 +85,8 @@ export const firebaseSignIn = async (formData: SigninFormData) => {
     // Fetch and store user data
     try {
       const data = await fetchUserData(user.uid);
-      authStoreActions.setUserData(data as UserData);
-      authStoreActions.setUser(user);
+      useAuthStore.getState().authStoreActions.setUserData(data as UserData);
+      useAuthStore.getState().authStoreActions.setUser(user);
     } catch (error: any) {
       console.error("Error fetching user data:", error);
       throw new Error(`Failed to fetch user data: ${error.message}`);
@@ -108,8 +110,8 @@ export const firebaseSignIn = async (formData: SigninFormData) => {
 export const firebaseSignOut = async () => {
   try {
     await signOut(auth);
-    authStoreActions.setUser(null);
-    authStoreActions.setUserData(null);
+    useAuthStore.getState().authStoreActions.setUser(null);
+    useAuthStore.getState().authStoreActions.setUserData(null);
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -169,12 +171,14 @@ export const firebaseSignInWithGoogle = async () => {
         "Created new user document in Firestore for Google Sign-In user:",
         user.uid
       );
-      authStoreActions.setUserData(userData as UserData);
+      useAuthStore
+        .getState()
+        .authStoreActions.setUserData(userData as UserData);
     } else {
       const data = await fetchUserData(user.uid);
-      authStoreActions.setUserData(data as UserData);
+      useAuthStore.getState().authStoreActions.setUserData(data as UserData);
     }
-    authStoreActions.setUser(user);
+    useAuthStore.getState().authStoreActions.setUser(user);
     return {
       success: true,
       user,
@@ -208,17 +212,3 @@ export const fetchUserData = async (uid: string) => {
     throw new Error(`Failed to fetch user data: ${error.message}`);
   }
 };
-
-// Example in a root client component (e.g., app/layout.tsx or a specific client provider)
-import { useEffect } from "react";
-import { initialiseAuth } from "@/stores/authStore";
-
-function AppInitializer() {
-  useEffect(() => {
-    initialiseAuth();
-  }, []);
-  return null; // This component doesn't render anything itself
-}
-
-// Then use <AppInitializer /> in your layout
-export default AppInitializer;

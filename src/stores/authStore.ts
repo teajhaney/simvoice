@@ -1,24 +1,40 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { AuthState, UserData } from "@/types/authType";
 import { fetchUserData } from "@/lib/authFunctions";
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  loading: true,
-  userData: null,
-  setUser: (user) => set({ user }),
-  setUserData: (userData) => set({ userData }),
-  setLoading: (loading) => set({ loading }),
-}));
-
-// Export store actions for use in authFunctions.ts
-export const authStoreActions = {
-  setUser: useAuthStore.getState().setUser,
-  setUserData: useAuthStore.getState().setUserData,
-  setLoading: useAuthStore.getState().setLoading,
-};
+// Define store with persistence
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      loading: true,
+      userData: null,
+      setUser: (user) => set({ user }),
+      setUserData: (userData) => set({ userData }),
+      setLoading: (loading) => set({ loading }),
+      // Expose actions for authFunctions.ts
+      authStoreActions: {
+        setUser: (user) => set({ user }),
+        setUserData: (userData) => set({ userData }),
+        setLoading: (loading) => set({ loading }),
+      },
+    }),
+    {
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user
+          ? { uid: state.user.uid, email: state.user.email }
+          : null,
+        userData: state.userData,
+        loading: state.loading,
+      }),
+    }
+  )
+);
 
 //initialising auth state listener
 export const initialiseAuth = () => {

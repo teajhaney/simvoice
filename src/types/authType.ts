@@ -1,12 +1,26 @@
 import { User } from "firebase/auth";
 
+// export interface AuthState {
+//   user: User | null;
+//   userData: UserData | null; // Added userData
+//   loading: boolean;
+//   setUser: (user: User | null) => void;
+//   setUserData: (userData: UserData | null) => void; // Added setUserData
+//   setLoading: (loading: boolean) => void;
+// }
+
 export interface AuthState {
   user: User | null;
-  userData: UserData | null; // Added userData
   loading: boolean;
+  userData: UserData | null;
   setUser: (user: User | null) => void;
-  setUserData: (userData: UserData | null) => void; // Added setUserData
+  setUserData: (userData: UserData | null) => void;
   setLoading: (loading: boolean) => void;
+  authStoreActions: {
+    setUser: (user: User | null) => void;
+    setUserData: (userData: UserData | null) => void;
+    setLoading: (loading: boolean) => void;
+  };
 }
 export interface DropdownMenu {
   isMenuOpen: boolean;
@@ -32,8 +46,6 @@ export interface SigninFormData {
   password: string;
 }
 
-
 export interface ForgetPasswordFormData {
   email: string;
-
 }
