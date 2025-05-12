@@ -55,15 +55,15 @@ const SignIn = () => {
   };
 
   return (
-    <main className="mx-3 2xl:mx-auto h-screen center-col gap-10">
+    <main className="mx-3 2xl:mx-auto py-10 min-h-screen center-col gap-10 ">
       <h1>
         <span className="font-medium text-3xl">Simvoice</span>.com
       </h1>
       <form
         action=""
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col bg-white h-fit p-10 rounded shadow w-full md:w-150 lg:w-200 2xl:w-250 space-y-5">
-        <h1 className="center font-bold text-3xl">Sign In</h1>
+        className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
+        <h1 className="center font-bold text-2xl lg:text-3xl">Sign In</h1>
         <p className="center text-accent">Welcome back</p>
         {/* email */}
         <div className={inputDiv}>
@@ -93,7 +93,9 @@ const SignIn = () => {
             <label htmlFor="email" className={lableStyles}>
               Passoword
             </label>
-            <p className={clsx(lableStyles, "text-accent cursor-pointer")}>
+            <p
+              onClick={() => {}}
+              className={clsx(lableStyles, "text-accent cursor-pointer")}>
               Forget password?
             </p>
           </div>
