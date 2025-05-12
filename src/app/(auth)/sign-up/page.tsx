@@ -57,7 +57,7 @@ const SignUp = () => {
   };
 
   return (
-    <main className="mx-3 2xl:mx-auto py-10 min-h-screen  center-col gap-10 ">
+    <main className="mx-3 2xl:mx-auto py-5 min-h-screen  center-col gap-10 ">
       <h1>
         <span className="font-medium text-3xl">Simvoice</span>.com
       </h1>
