@@ -22,7 +22,7 @@ const NavigationBar = () => {
     <nav className="bg-background h-14 shadow text-textColor">
       <div className="appMarginX flex gap-10  items-center max-md:justify-between h-full ">
         <div className="" onClick={() => navigate.push("/")}>
-          <p className="text-2xl font-bold text-primary">simvoice</p>
+          <p className="text-2xl font-bold text-primary">Simvoice</p>
         </div>
         <div className=" md:w-full flex items-center justify-between max-md:hidden">
           {/* nav items */}
