@@ -7,5 +7,5 @@ export default function Home() {
   useEffect(() => {
     initialiseAuth();
   }, []);
-  return <div className="">hello page</div>;
+  return <div className="text-red-500">hello page</div>;
 }

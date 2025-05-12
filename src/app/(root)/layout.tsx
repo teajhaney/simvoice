@@ -1,9 +1,8 @@
-
 import React from "react";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="text-white">
+    <div className="">
       {/* <NavigationBar /> */}
       {children}
       {/* <Footer /> */}
