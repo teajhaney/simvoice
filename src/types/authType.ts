@@ -8,6 +8,10 @@ export interface AuthState {
   setUserData: (userData: UserData | null) => void; // Added setUserData
   setLoading: (loading: boolean) => void;
 }
+export interface DropdownMenu {
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
+}
 
 export interface UserData {
   firstName: string;

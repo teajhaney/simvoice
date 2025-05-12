@@ -1,24 +1,20 @@
 "use client";
-import React from "react";
+
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/component";
 import { IoMenuSharp } from "react-icons/io5";
+import { navigationItems } from "@/contants";
+import { useDropdownMenuStore } from "@/stores/dropdownMenuStore";
+
 
 const NavigationBar = () => {
   const navigate = useRouter();
   const pathname = usePathname();
+  const toggleMenu  = useDropdownMenuStore((state) => state.toggleMenu);
 
-  const navigationItems = [
-    {
-      label: "Home",
-      link: "/",
-    },
-    {
-      label: "History",
-      link: "/history",
-    },
-  ];
+  //toggle menu
+
   return (
     <nav className="bg-background h-14 shadow text-textColor">
       <div className="appMarginX flex gap-10  items-center max-md:justify-between h-full ">
@@ -66,10 +62,14 @@ const NavigationBar = () => {
         {/* menu */}
         <Button
           className="md:hidden rounded-lg border border-gray200 p-2"
-          onClick={() => {}}>
+          onClick={() => {
+            toggleMenu();
+          }}>
           <IoMenuSharp className="text-primary text-xl font-bold" />
         </Button>
       </div>
+      {/* mobile menu */}
+      
     </nav>
   );
 };
