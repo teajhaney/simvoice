@@ -38,7 +38,7 @@ const SignIn = () => {
   } = useForm<SigninFormData>({
     resolver: zodResolver(signInSchema),
   });
-
+  //sign
   const onSubmit = async (data: SigninFormData) => {
     console.log("form submitted", data);
     setIsLoading(true);
@@ -54,10 +54,12 @@ const SignIn = () => {
       setIsLoading(false);
     }
   };
+  //googlr
   const handleGoogleSignIn = async () => {
     console.log("Initiating Google Sign-In");
     setIsGoogleLoading(true);
     setAuthError(null);
+    setIsGoogleLoading(false);
     try {
       await firebaseSignInWithGoogle();
       console.log("Google Sign-In completed");

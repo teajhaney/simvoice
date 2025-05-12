@@ -3,9 +3,9 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-	sendPasswordResetEmail,
-	signInWithPopup,
-  GoogleAuthProvider
+  sendPasswordResetEmail,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
@@ -90,20 +90,6 @@ export const firebaseSignOut = async () => {
   }
 };
 
-// Fetch user data from Firestore
-export const fetchUserData = async (uid: string) => {
-  try {
-    const userDoc = await getDoc(doc(db, "users", uid));
-    if (userDoc.exists()) {
-      return userDoc.data();
-    } else {
-      throw new Error("User data not found.");
-    }
-  } catch (error: any) {
-    throw new Error(`Failed to fetch user data: ${error.message}`);
-  }
-};
-
 //forget password functions
 export const firebaseForgotPassword = async (
   formData: ForgetPasswordFormData
@@ -133,19 +119,64 @@ export const firebaseSignInWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    console.log("Google Sign-In successful for:", result.user.email);
+    const user = result.user;
+    console.log("Google Sign-In successful for:", user.email);
+
+    // Check if user data already exists in Firestore, if not, create it
+    const userDocRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      // User is new or data is missing, create it
+      // Attempt to parse displayName for firstName and lastName
+      const displayName = user.displayName || "";
+      const nameParts = displayName.split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      await setDoc(userDocRef, {
+        firstName: firstName,
+        lastName: lastName,
+        email: user.email,
+        createdAt: new Date().toISOString(),
+        // photoURL: user.photoURL, // Optionally store photoURL if needed
+      });
+      console.log(
+        "Created new user document in Firestore for Google Sign-In user:",
+        user.uid
+      );
+    }
+
     return {
       success: true,
-      user: result.user,
+      user: user,
     };
   } catch (error: any) {
-    console.error("Google Sign-In error:", { code: error.code, message: error.message });
+    console.error("Google Sign-In error:", {
+      code: error.code,
+      message: error.message,
+    });
     let errorMessage = "Failed to sign in with Google. Please try again.";
     if (error.code === "auth/popup-closed-by-user") {
       errorMessage = "Google Sign-In was canceled.";
     } else if (error.code === "auth/account-exists-with-different-credential") {
-      errorMessage = "An account already exists with this email. Try signing in with email/password.";
+      errorMessage =
+        "An account already exists with this email. Try signing in with email/password.";
     }
     throw new Error(errorMessage);
+  }
+};
+
+// Fetch user data from Firestore
+export const fetchUserData = async (uid: string) => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error("User data not found.");
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user data: ${error.message}`);
   }
 };
