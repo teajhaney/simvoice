@@ -85,6 +85,7 @@ const SignUp = () => {
               <input
                 type="firstName"
                 id="firstName"
+                placeholder="First Name"
                 {...register("firstName")}
                 className={inputStyles}
               />
@@ -105,6 +106,7 @@ const SignUp = () => {
               <input
                 type="lastName"
                 id="lastName"
+                placeholder="Last Name"
                 {...register("lastName")}
                 className={inputStyles}
               />
