@@ -3,11 +3,16 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { SignupFormData, SigninFormData } from "@/types/authType";
+import {
+  SignupFormData,
+  SigninFormData,
+  ForgetPasswordFormData,
+} from "@/types/authType";
 
 export const firebaseSignUp = async (formData: SignupFormData) => {
   try {
@@ -94,5 +99,29 @@ export const fetchUserData = async (uid: string) => {
     }
   } catch (error: any) {
     throw new Error(`Failed to fetch user data: ${error.message}`);
+  }
+};
+
+//forget password functions
+export const firebaseForgotPassword = async (
+  formData: ForgetPasswordFormData
+) => {
+  try {
+    const { email } = formData;
+    await sendPasswordResetEmail(auth, email);
+    return {
+      success: true,
+      message: "Password reset email sent. Check your inbox.",
+    };
+  } catch (error: any) {
+    let errorMessage = "Failed to send password reset email. Please try again.";
+    if (error.message === "No account found with this email.") {
+      errorMessage = error.message;
+    } else if (error.code === "auth/invalid-email") {
+      errorMessage = "Invalid email address.";
+    } else if (error.code === "auth/too-many-requests") {
+      errorMessage = "Too many requests. Try again later.";
+    }
+    throw new Error(errorMessage);
   }
 };

@@ -46,7 +46,8 @@ const SignUp = () => {
     try {
       await firebaseSignUp(data); // Call firebaseSignUp function with the form data
       console.log("User signed up successfully");
-      setIsLoading(false);
+
+      navigate.push("/");
       reset();
     } catch (error: any) {
       console.error("Error submitting form:", error);
@@ -88,6 +89,7 @@ const SignUp = () => {
                 placeholder="First Name"
                 {...register("firstName")}
                 className={inputStyles}
+                onFocus={() => setAuthError(null)}
               />
             </div>
 
@@ -109,6 +111,7 @@ const SignUp = () => {
                 placeholder="Last Name"
                 {...register("lastName")}
                 className={inputStyles}
+                onFocus={() => setAuthError(null)}
               />
             </div>
             {errors.lastName && (

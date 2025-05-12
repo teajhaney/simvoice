@@ -16,10 +16,11 @@ import {
   lableStyles,
   LooadingSpinner,
 } from "@/util/utils";
-import { firebaseSignIn, firebaseSignOut } from "@/lib/authFunctions";
+import { firebaseSignIn } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
+
 ////
 
 type SigninFormData = z.infer<typeof signInSchema>;
@@ -43,8 +44,7 @@ const SignIn = () => {
     try {
       await firebaseSignIn(data); // Call firebaseSignIn function with the form data
       console.log("User signed in successfully");
-      setIsLoading(false);
-      firebaseSignOut();
+      navigate.push("/");
       reset();
     } catch (error: any) {
       console.error("Error submitting form:", error);
@@ -62,7 +62,9 @@ const SignIn = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
-        <h1 className="text-primary center font-bold text-2xl lg:text-3xl">Sign In</h1>
+        <h1 className="text-primary center font-bold text-2xl lg:text-3xl">
+          Sign In
+        </h1>
         <p className="center text-accent">Welcome back</p>
         {/* email */}
         <div className={inputDiv}>
@@ -93,7 +95,9 @@ const SignIn = () => {
               Passoword
             </label>
             <p
-              onClick={() => {}}
+              onClick={() => {
+                navigate.push("/forget-password");
+              }}
               className={clsx(lableStyles, "text-accent cursor-pointer")}>
               Forget password?
             </p>
