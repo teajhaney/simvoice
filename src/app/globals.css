@@ -18,6 +18,7 @@
   --color-gray100: #f3f4f6;
   --color-gray200: #e5e7eb;
   --color-red500: #fb2c36;
+  ----color-textColor: #677787;
 }
 
 @media (prefers-color-scheme: dark) {

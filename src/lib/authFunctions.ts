@@ -3,7 +3,9 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail,
+	sendPasswordResetEmail,
+	signInWithPopup,
+  GoogleAuthProvider
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
@@ -121,6 +123,28 @@ export const firebaseForgotPassword = async (
       errorMessage = "Invalid email address.";
     } else if (error.code === "auth/too-many-requests") {
       errorMessage = "Too many requests. Try again later.";
+    }
+    throw new Error(errorMessage);
+  }
+};
+
+//google sign in
+export const firebaseSignInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    console.log("Google Sign-In successful for:", result.user.email);
+    return {
+      success: true,
+      user: result.user,
+    };
+  } catch (error: any) {
+    console.error("Google Sign-In error:", { code: error.code, message: error.message });
+    let errorMessage = "Failed to sign in with Google. Please try again.";
+    if (error.code === "auth/popup-closed-by-user") {
+      errorMessage = "Google Sign-In was canceled.";
+    } else if (error.code === "auth/account-exists-with-different-credential") {
+      errorMessage = "An account already exists with this email. Try signing in with email/password.";
     }
     throw new Error(errorMessage);
   }

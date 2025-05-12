@@ -16,7 +16,7 @@ import {
   lableStyles,
   LooadingSpinner,
 } from "@/util/utils";
-import { firebaseSignIn } from "@/lib/authFunctions";
+import { firebaseSignIn, firebaseSignInWithGoogle } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
@@ -27,6 +27,7 @@ type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -53,7 +54,21 @@ const SignIn = () => {
       setIsLoading(false);
     }
   };
-
+  const handleGoogleSignIn = async () => {
+    console.log("Initiating Google Sign-In");
+    setIsGoogleLoading(true);
+    setAuthError(null);
+    try {
+      await firebaseSignInWithGoogle();
+      console.log("Google Sign-In completed");
+      navigate.push("/");
+    } catch (error: any) {
+      console.error("Google Sign-In error:", error.message);
+      setAuthError(error.message);
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
   return (
     <main className="mx-3 2xl:mx-auto py-5 min-h-screen center-col gap-10 ">
       <h1>
@@ -165,18 +180,25 @@ const SignIn = () => {
         <Button
           type="button"
           className="self-center  border border-primary center rounded py-3 px-5 hover:shadow cursor-pointer gap-10 w-full"
-          onClick={() => {}}>
+          onClick={() => handleGoogleSignIn()}>
           {" "}
-          <Image
-            src="/images/google.svg"
-            alt="google logo"
-            width={24}
-            height={24}
-            className="h-auto w-auto"
-          />
-          <p className="text-primary font-medium max-md:text-sm">
-            Sign in with Google
-          </p>
+          {isGoogleLoading ? (
+            <LooadingSpinner className="border-primary h-6 w-6 border-dashed border-2" />
+          ) : (
+            <div className="center gap-10">
+              {" "}
+              <Image
+                src="/images/google.svg"
+                alt="google logo"
+                width={24}
+                height={24}
+                className="h-auto w-auto"
+              />
+              <p className="text-primary font-medium max-md:text-sm">
+                Sign in with Google
+              </p>
+            </div>
+          )}
         </Button>
         <p className="center text-sm text-primary">
           Don&apos;t have an account yet? {"   "}
