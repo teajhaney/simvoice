@@ -60,7 +60,6 @@ const SignIn = () => {
         <span className="font-medium text-3xl">Simvoice</span>.com
       </h1>
       <form
-        action=""
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
         <h1 className="center font-bold text-2xl lg:text-3xl">Sign In</h1>
