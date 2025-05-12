@@ -6,14 +6,17 @@ import { Button } from "@/component";
 import { IoMenuSharp } from "react-icons/io5";
 import { navigationItems } from "@/contants";
 import { useDropdownMenuStore } from "@/stores/dropdownMenuStore";
-
-
+import { useAuthStore } from "@/stores/authStore"; // Import the auth store
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { useState } from "react";
+import Image from "next/image";
+import { firebaseSignOut } from "@/lib/authFunctions";
 const NavigationBar = () => {
   const navigate = useRouter();
   const pathname = usePathname();
-  const toggleMenu  = useDropdownMenuStore((state) => state.toggleMenu);
-
-  //toggle menu
+  const toggleMenu = useDropdownMenuStore((state) => state.toggleMenu);
+  const { user, userData, loading } = useAuthStore((state) => state);
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   return (
     <nav className="bg-background h-14 shadow text-textColor">
@@ -40,24 +43,79 @@ const NavigationBar = () => {
             ))}
           </ul>
           {/*  */}
-          <div className="flex gap-10 items-center">
-            <Button
-              type="button"
-              className=" cursor-pointer bg-white py-2 px-3 rounded hover:shadow"
-              onClick={() => {
-                navigate.push("/sign-in");
-              }}>
-              <p className="">Sign In</p>
-            </Button>
-            <Button
-              type="button"
-              className="cursor-pointer bg-primary py-2 px-3 rounded hover:shadow"
-              onClick={() => {
-                navigate.push("/sign-up");
-              }}>
-              <p className="text-white">Sign Up</p>
-            </Button>
-          </div>
+          {!loading && ( // Only render auth-dependent UI once loading is false
+            <div className=" flex gap-6 items-center ">
+              {user && userData ? (
+                <>
+                  <div
+                    className="relative font-medium flex gap-2 items-center cursor-pointer"
+                    onClick={() => setIsOpenMenu(!isOpenMenu)}>
+                    <p> Hi, {userData.firstName || user.email}</p>
+                    <MdKeyboardArrowDown />
+                    {isOpenMenu && (
+                      <div className="absolute index-x-0 w-60 rounded  p-2 bg-white shadow -bottom-40 right-0 flex flex-col gap-2 text-textColor z-100">
+                        <div className="flex items-center gap-2 ">
+                          <Image
+                            src="/images/profile-placeholder.jpeg"
+                            alt="Image Description"
+                            width={50}
+                            height={50}
+                            placeholder="blur"
+                            blurDataURL="/images/profile-placeholder.jpeg"
+                          />
+                          <div className="flex flex-col ">
+                            <p className="text-sm">
+                              {" "}
+                              {userData.firstName} {userData.lastName}
+                            </p>
+                            <p className="text-gray-500 text-sm">
+                              {" "}
+                              {userData.email}
+                            </p>
+                          </div>
+                        </div>
+                        <p
+                          className={`text-md  px-3 py-2 cursor-pointer ${
+                            pathname === "/account"
+                              ? " text-textColor bg-gray200 rounded "
+                              : "text-textColor  "
+                          }`}
+                          onClick={() => navigate.push("/account")}>
+                          {" "}
+                          My Account
+                        </p>
+                        <hr className="border-b border-gray200" />
+                        <p
+                          className="text-md px-3 text-red500 cursor-pointer"
+                          onClick={() => {
+                            firebaseSignOut();
+                            navigate.push("/");
+                          }}>
+                          {" "}
+                          Sign out
+                        </p>
+                      </div>
+                    )}
+                  </div>{" "}
+                </>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    className=" cursor-pointer bg-white py-2 px-3 rounded hover:shadow "
+                    onClick={() => navigate.push("/sign-in")}>
+                    <p className="">Sign In</p>
+                  </Button>
+                  <Button
+                    type="button"
+                    className="cursor-pointer bg-primary py-2 px-3 rounded hover:shadow "
+                    onClick={() => navigate.push("/sign-up")}>
+                    <p className="text-white">Sign Up</p>
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
         {/* menu */}
         <Button
@@ -69,7 +127,6 @@ const NavigationBar = () => {
         </Button>
       </div>
       {/* mobile menu */}
-      
     </nav>
   );
 };

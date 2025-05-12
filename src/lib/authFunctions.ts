@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -14,7 +15,9 @@ import {
   SignupFormData,
   SigninFormData,
   ForgetPasswordFormData,
+  UserData,
 } from "@/types/authType";
+import { authStoreActions } from "@/stores/authStore";
 
 export const firebaseSignUp = async (formData: SignupFormData) => {
   try {
@@ -28,12 +31,16 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
     const user = userCredential.user;
     // Save user data to Firestore
     try {
-      await setDoc(doc(db, "users", user.uid), {
+      const userData = {
         firstName,
         lastName,
         email,
         createdAt: new Date().toISOString(),
-      });
+      };
+      await setDoc(doc(db, "users", user.uid), userData);
+      // Update Zustand store with user data
+      authStoreActions.setUserData(userData as UserData);
+      authStoreActions.setUser(user);
     } catch (firestoreError: any) {
       console.error(
         "Firestore error:",
@@ -61,11 +68,27 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
   }
 };
 
+///sign in
+
 export const firebaseSignIn = async (formData: SigninFormData) => {
   try {
     const { email, password } = formData;
-    // login user with Firebase authentication
-    await signInWithEmailAndPassword(auth, email, password);
+    // Login user with Firebase authentication
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    // Fetch and store user data
+    try {
+      const data = await fetchUserData(user.uid);
+      authStoreActions.setUserData(data as UserData);
+      authStoreActions.setUser(user);
+    } catch (error: any) {
+      console.error("Error fetching user data:", error);
+      throw new Error(`Failed to fetch user data: ${error.message}`);
+    }
   } catch (error: any) {
     switch (error.code) {
       case "auth/user-not-found":
@@ -81,10 +104,12 @@ export const firebaseSignIn = async (formData: SigninFormData) => {
     }
   }
 };
-
+//sign out
 export const firebaseSignOut = async () => {
   try {
     await signOut(auth);
+    authStoreActions.setUser(null);
+    authStoreActions.setUserData(null);
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -133,23 +158,26 @@ export const firebaseSignInWithGoogle = async () => {
       const nameParts = displayName.split(" ");
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
-
-      await setDoc(userDocRef, {
-        firstName: firstName,
-        lastName: lastName,
+      const userData = {
+        firstName,
+        lastName,
         email: user.email,
         createdAt: new Date().toISOString(),
-        // photoURL: user.photoURL, // Optionally store photoURL if needed
-      });
+      };
+      await setDoc(userDocRef, userData);
       console.log(
         "Created new user document in Firestore for Google Sign-In user:",
         user.uid
       );
+      authStoreActions.setUserData(userData as UserData);
+    } else {
+      const data = await fetchUserData(user.uid);
+      authStoreActions.setUserData(data as UserData);
     }
-
+    authStoreActions.setUser(user);
     return {
       success: true,
-      user: user,
+      user,
     };
   } catch (error: any) {
     console.error("Google Sign-In error:", {
@@ -180,3 +208,17 @@ export const fetchUserData = async (uid: string) => {
     throw new Error(`Failed to fetch user data: ${error.message}`);
   }
 };
+
+// Example in a root client component (e.g., app/layout.tsx or a specific client provider)
+import { useEffect } from "react";
+import { initialiseAuth } from "@/stores/authStore";
+
+function AppInitializer() {
+  useEffect(() => {
+    initialiseAuth();
+  }, []);
+  return null; // This component doesn't render anything itself
+}
+
+// Then use <AppInitializer /> in your layout
+export default AppInitializer;

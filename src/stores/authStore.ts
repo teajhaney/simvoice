@@ -13,22 +13,29 @@ export const useAuthStore = create<AuthState>((set) => ({
   setLoading: (loading) => set({ loading }),
 }));
 
+// Export store actions for use in authFunctions.ts
+export const authStoreActions = {
+  setUser: useAuthStore.getState().setUser,
+  setUserData: useAuthStore.getState().setUserData,
+  setLoading: useAuthStore.getState().setLoading,
+};
+
 //initialising auth state listener
 export const initialiseAuth = () => {
-  const { setUser, setLoading,setUserData } = useAuthStore.getState();
-  onAuthStateChanged(auth,async (user) => {
-	  setUser(user);
-	    if (user) {
-        try {
-          const data = await fetchUserData(user.uid);
-          setUserData(data as UserData);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          setUserData(null);
-        }
-      } else {
+  const { setUser, setLoading, setUserData } = useAuthStore.getState();
+  onAuthStateChanged(auth, async (user) => {
+    setUser(user);
+    if (user) {
+      try {
+        const data = await fetchUserData(user.uid);
+        setUserData(data as UserData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
         setUserData(null);
       }
+    } else {
+      setUserData(null);
+    }
     setLoading(false);
   });
 };
