@@ -20,7 +20,13 @@
   --color-red500: #fb2c36;
 }
 
-
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --background: #0a0a0a; */
+    --background: #01161e;
+    /* --foreground: #ededed; */
+  }
+}
 
 body {
   background: var(--background);
