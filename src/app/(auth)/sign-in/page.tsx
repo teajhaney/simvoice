@@ -55,14 +55,14 @@ const SignIn = () => {
   };
 
   return (
-    <main className="mx-3 2xl:mx-auto py-10 min-h-screen center-col gap-10 ">
+    <main className="mx-3 2xl:mx-auto py-5 min-h-screen center-col gap-10 ">
       <h1>
         <span className="font-medium text-3xl">Simvoice</span>.com
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
-        <h1 className="center font-bold text-2xl lg:text-3xl">Sign In</h1>
+        <h1 className="text-primary center font-bold text-2xl lg:text-3xl">Sign In</h1>
         <p className="center text-accent">Welcome back</p>
         {/* email */}
         <div className={inputDiv}>
@@ -174,7 +174,7 @@ const SignIn = () => {
             Sign in with Google
           </p>
         </Button>
-        <p className="center text-sm">
+        <p className="center text-sm text-primary">
           Don&apos;t have an account yet? {"   "}
           <span
             className=" text-accent ml-1 cursor-pointer"

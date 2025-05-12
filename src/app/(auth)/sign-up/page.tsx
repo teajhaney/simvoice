@@ -65,7 +65,7 @@ const SignUp = () => {
         action=""
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
-        <h1 className="center font-bold text-2xl sm:text-3xl">
+        <h1 className="text-primary center font-bold text-2xl sm:text-3xl">
           Create a free account
         </h1>
         <p className="center text-accent text-sm lg:text-md text-center">
@@ -247,7 +247,7 @@ const SignUp = () => {
             <p className="text-white">Sign up</p>
           )}
         </Button>
-        <p className="center text-sm">
+        <p className="center text-sm text-primary">
           Already have an account? {"   "}
           <span
             className=" text-accent ml-1 cursor-pointer"
