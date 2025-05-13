@@ -20,6 +20,7 @@ import { firebaseSignIn, firebaseSignInWithGoogle } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
+import toast from "react-hot-toast";
 
 ////
 
@@ -45,6 +46,7 @@ const SignIn = () => {
     try {
       await firebaseSignIn(data); // Call firebaseSignIn function with the form data
       console.log("User signed in successfully");
+      toast.success("User signed in successfully");
       navigate.push("/");
       reset();
     } catch (error: any) {

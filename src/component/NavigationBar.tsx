@@ -11,12 +11,16 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { useState } from "react";
 import Image from "next/image";
 import { firebaseSignOut } from "@/lib/authFunctions";
+import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
+import { useThemeStore } from "@/stores/themeStore";
+//
 const NavigationBar = () => {
   const navigate = useRouter();
   const pathname = usePathname();
   const toggleMenu = useDropdownMenuStore((state) => state.toggleMenu);
   const { user, userData, loading } = useAuthStore((state) => state);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const { theme, toggleTheme } = useThemeStore((state) => state);
 
   return (
     <nav className="bg-background h-14 shadow text-textColor">
@@ -28,14 +32,12 @@ const NavigationBar = () => {
           {/* nav items */}
           <ul className="flex items-center gap-10">
             {navigationItems.map((navigationItem, index) => (
-              <Link
-                key={`${navigationItem.label}-${navigationItem.link}-${index}`}
-                href={navigationItem.link}>
+              <Link key={index} href={navigationItem.link}>
                 <li
                   className={`cursor-pointer font-medium text-md  pb-1 ${
                     pathname === navigationItem.link
-                      ? " text-primary font-black"
-                      : "text-textColor"
+                      ? " text-primary  font-black"
+                      : "text-textColor "
                   }`}>
                   {navigationItem.label}
                 </li>
@@ -53,7 +55,7 @@ const NavigationBar = () => {
                     <p> Hi, {userData.firstName || user.email}</p>
                     <MdKeyboardArrowDown />
                     {isOpenMenu && (
-                      <div className="absolute index-x-0 w-60 rounded  p-2 bg-white shadow -bottom-40 right-0 flex flex-col gap-2 text-textColor z-100">
+                      <div className="absolute bg-background index-x-0 w-60 rounded  p-2 shadow -bottom-40 right-0 flex flex-col gap-2 text-textColor z-100">
                         <div className="flex items-center gap-2 ">
                           <Image
                             src="/images/profile-placeholder.jpeg"
@@ -61,6 +63,7 @@ const NavigationBar = () => {
                             width={50}
                             height={50}
                             placeholder="blur"
+                            className="rounded-full"
                             blurDataURL="/images/profile-placeholder.jpeg"
                           />
                           <div className="flex flex-col ">
@@ -102,7 +105,7 @@ const NavigationBar = () => {
                 <>
                   <Button
                     type="button"
-                    className=" cursor-pointer bg-white py-2 px-3 rounded hover:shadow "
+                    className=" cursor-pointer border border-gray200 py-2 px-3 rounded hover:shadow "
                     onClick={() => navigate.push("/sign-in")}>
                     <p className="">Sign In</p>
                   </Button>
@@ -117,6 +120,17 @@ const NavigationBar = () => {
             </div>
           )}
         </div>
+        {/* mode */}
+        <Button
+          type="button"
+          className="p-2 rounded-lg border border-gray200"
+          onClick={toggleTheme}>
+          {theme === "light" ? (
+            <MdOutlineLightMode className="text-textColor text-xl" />
+          ) : (
+            <MdLightMode className="text-textColor text-xl" />
+          )}
+        </Button>
         {/* menu */}
         <Button
           className="md:hidden rounded-lg border border-gray200 p-2"

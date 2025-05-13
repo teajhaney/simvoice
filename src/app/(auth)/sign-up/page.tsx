@@ -21,6 +21,7 @@ import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import { IoPersonOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
 //////
 
 type SignupFormData = z.infer<typeof signUpSchema>;
@@ -46,7 +47,7 @@ const SignUp = () => {
     try {
       await firebaseSignUp(data); // Call firebaseSignUp function with the form data
       console.log("User signed up successfully");
-
+      toast.success("User signed in successfully");
       navigate.push("/");
       reset();
     } catch (error: any) {

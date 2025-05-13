@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppInitializer } from "@/component";
-
+import { Toaster } from "react-hot-toast";
+import { ThemeWrapper } from "@/component";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +32,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme-storage');
+                  if (theme) {
+                    const { state } = JSON.parse(theme);
+                    if (state && state.theme) {
+                      document.documentElement.setAttribute('data-theme', state.theme);
+                    }
+                  } else {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning>
         <AppInitializer />
-        {children}
+        <ThemeWrapper>{children}</ThemeWrapper>
+        <Toaster />
       </body>
     </html>
   );
