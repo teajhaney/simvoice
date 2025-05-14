@@ -59,9 +59,9 @@ export const invoiceFormSchema = z.object({
   businessName: z.string().min(1, "Business name is required"),
   invoiceNumber: z.string().min(1, "Invoice number is required"),
   billTo: z.string().min(1, "Bill to is required"),
-  billFrom: z.string().min(1, "Bill from is required"),
+  billFrom: z.string().min(1, "Bill from is required").optional(),
   date: z.string().min(1, "Date is required"),
-  paymentTerm: z.string().optional(),
+  paymentTerm: z.number().optional(),
   dueDate: z.string().optional(),
   poNumber: z.string().optional(),
   items: z

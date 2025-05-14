@@ -20,8 +20,8 @@ export default function Home() {
   }
 
   return (
-    <div className=" flex flex-col bg-customBackground">
-		  <p className="text-red-500">hellp home</p>
+    <div className=" flex flex-col bg-customBackground ">
+	
 		  <InvoiceForm />
     </div>
   );

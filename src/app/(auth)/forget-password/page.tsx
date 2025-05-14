@@ -12,12 +12,13 @@ import {
   errorStyles,
   inputDiv,
   inputStyles,
-  lableStyles,
-  LooadingSpinner,
+  labelStyles,
   resetPasswordStyles,
-} from "@/util/utils";
+} from "@/styles";
 import { firebaseForgotPassword } from "@/lib/authFunctions";
 import { CiMail } from "react-icons/ci";
+import { LooadingSpinner } from "@/util/utils";
+
 
 ////
 
@@ -70,7 +71,7 @@ const ForgetPassword = () => {
         <p className="center text-accent">Input your registered email</p>
         {/* email */}
         <div className={inputDiv}>
-          <label htmlFor="email" className={lableStyles}>
+          <label htmlFor="email" className={labelStyles}>
             Email
           </label>
           <div className="relative">
@@ -93,7 +94,7 @@ const ForgetPassword = () => {
             <p className={errorStyles}>{errors.email.message}</p>
           )}
         </div>
-        <p className="text-green-500 text-[10px]">
+        <p className="text-customGreen text-[10px]">
           *Please provide a valid and registered email address. if you
           don&apos;t get an email, check if your email is correct.
         </p>
