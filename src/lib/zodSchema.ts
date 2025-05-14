@@ -64,15 +64,9 @@ export const invoiceFormSchema = z.object({
   billTo: z.string().min(1, "Bill to is required"),
   billFrom: z.string().optional(),
   date: z.string().min(1, "Date is required"),
-  paymentTerm: z
-    .string()
-    .optional(),
-  dueDate: z
-    .string()
-    .optional(),
-  poNumber: z.coerce
-    .number()
-    .optional(),
+  paymentTerm: z.string().optional(),
+  dueDate: z.string().optional(),
+  poNumber: z.coerce.number().optional(),
   items: z
     .array(
       z.object({
@@ -82,20 +76,15 @@ export const invoiceFormSchema = z.object({
       })
     )
     .min(1, "At least one item is required"),
-  notes: z
-    .string()
-    .optional(),
-  
-  termsAndConditions: z
-    .string()
-    .optional(),
+  notes: z.string().optional(),
+
+  termsAndConditions: z.string().optional(),
 
   discount: z.coerce.number().min(0, "Discount cannot be negative").optional(),
   tax: z.coerce.number().min(0, "Tax cannot be negative").optional(),
-  shipping: z.coerce
-    .number()
-    .optional(),
+  shipping: z.coerce.number().optional(),
   amountPaid: z.coerce.number().optional(),
+  currency: z.string().min(1, "Currency is required"),
 });
 
 export type InvoiceFormData = z.infer<typeof invoiceFormSchema>;

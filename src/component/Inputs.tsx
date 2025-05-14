@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { currencies } from "@/contants";
 import {
   invoiceInputDiv,
   invoiceInputStyles,
@@ -99,5 +100,33 @@ export const InputFile = ({ id, register, errors }: InputProps) => {
         />
       </label>
     </div>
+  );
+};
+
+// Add this to your Inputs.tsx or create a new component
+export const CurrencySelect = ({
+  id,
+  register,
+  errors,
+  className = "",
+}: {
+  id: string;
+  register: UseFormRegister<any>;
+  errors: FieldErrors;
+  className?: string;
+}) => {
+  return (
+    <select
+      id={id}
+      {...register(id)}
+      className={`${invoiceInputDiv}${className} ${
+        errors[id] ? "border-red500" : ""
+      } p-2 border rounded`}>
+      {Object.entries(currencies).map(([code, name]) => (
+        <option key={code} value={code}>
+          {code} - {name}
+        </option>
+      ))}
+    </select>
   );
 };
