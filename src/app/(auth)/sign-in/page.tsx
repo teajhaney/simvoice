@@ -9,17 +9,13 @@ import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  LooadingSpinner,
-} from "@/util/utils";
+import { LooadingSpinner } from "@/util/utils";
 import { firebaseSignIn, firebaseSignInWithGoogle } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
-
-////
 
 type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
@@ -36,13 +32,12 @@ const SignIn = () => {
   } = useForm<SigninFormData>({
     resolver: zodResolver(signInSchema),
   });
+
   //sign
   const onSubmit = async (data: SigninFormData) => {
-    console.log("form submitted", data);
     setIsLoading(true);
     try {
-      await firebaseSignIn(data); // Call firebaseSignIn function with the form data
-      console.log("User signed in successfully");
+      await firebaseSignIn(data);
       toast.success("User signed in successfully");
       navigate.push("/");
       reset();
@@ -53,23 +48,22 @@ const SignIn = () => {
       setIsLoading(false);
     }
   };
-  //googlr
+
+  //google
   const handleGoogleSignIn = async () => {
-    console.log("Initiating Google Sign-In");
     setIsGoogleLoading(true);
     setAuthError(null);
     setIsGoogleLoading(false);
     try {
       await firebaseSignInWithGoogle();
-      console.log("Google Sign-In completed");
       navigate.push("/");
     } catch (error: any) {
-      console.error("Google Sign-In error:", error.message);
       setAuthError(error.message);
     } finally {
       setIsGoogleLoading(false);
     }
   };
+
   return (
     <main className="mx-3 2xl:mx-auto py-5 min-h-screen center-col gap-10 ">
       <h1>

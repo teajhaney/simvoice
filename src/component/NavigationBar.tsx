@@ -33,8 +33,17 @@ const NavigationBar = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
 
+    const handleClickInside = (event: MouseEvent) => {
+      if (menuRef.current && menuRef.current.contains(event.target as Node)) {
+        setIsOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickInside);
     };
   }, []);
 

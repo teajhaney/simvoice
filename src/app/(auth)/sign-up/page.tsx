@@ -9,10 +9,7 @@ import clsx from "clsx";
 import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
- 
-  LooadingSpinner,
-} from "@/util/utils";
+import { LooadingSpinner } from "@/util/utils";
 import { firebaseSignUp } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
@@ -20,9 +17,9 @@ import { HiOutlineEyeSlash } from "react-icons/hi2";
 import { IoPersonOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
-//////
 
 type SignupFormData = z.infer<typeof signUpSchema>;
+
 const SignUp = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,12 +36,12 @@ const SignUp = () => {
     resolver: zodResolver(signUpSchema),
   });
 
+  //sign up
   const onSubmit = async (data: SignupFormData) => {
-    console.log("form submitted", data);
     setIsLoading(true);
     try {
       await firebaseSignUp(data); // Call firebaseSignUp function with the form data
-      console.log("User signed up successfully");
+
       toast.success("User signed in successfully");
       navigate.push("/");
       reset();
