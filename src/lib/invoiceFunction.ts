@@ -42,3 +42,15 @@ export const generatePDF = (data: InvoiceFormData) => {
 
   doc.save(`Invoice_${data.invoiceNumber}.pdf`);
 };
+
+
+
+// const fetchInvoices = async (uid: string) => {
+//   const invoicesRef = collection(db, "users", uid, "invoices");
+//   const snapshot = await getDocs(invoicesRef);
+//   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+// };
+
+// // Usage in a component
+// const invoices = await fetchInvoices(user.uid);
+// console.log(invoices); // [{ id: "abc123", clientName: "Client", items: [...], ... }]
