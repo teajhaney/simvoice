@@ -5,7 +5,7 @@ interface ButtonProps {
   className: string;
   children: ReactNode;
   type?: "button" | "submit" | "reset";
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 const Button = ({ className, children, onClick, type }: ButtonProps) => {
   return (

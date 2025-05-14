@@ -16,7 +16,7 @@ const DropdownMenu = () => {
   const { user, userData, loading } = useAuthStore((state) => state);
   return (
     <div
-      className={`md:hidden bg-background shadow overflow-hidden transition-all duration-300 ease-in-out text-textColor ${
+      className={`md:hidden bg-background shdow overflow-hidden transition-all duration-300 ease-in-out text-textColor ${
         isMenuOpen ? "max-h-96" : "max-h-0"
       }`}>
       <div className="appMarginX py-4 flex flex-col gap-4">
@@ -51,7 +51,10 @@ const DropdownMenu = () => {
                     blurDataURL="/images/profile-placeholder.jpeg"
                   />
                   <div className="flex flex-col ">
-                    <p className="text-sm"> {userData.firstName} {userData.lastName}</p>
+                    <p className="text-sm">
+                      {" "}
+                      {userData.firstName} {userData.lastName}
+                    </p>
                     <p className="text-gray-500 text-sm"> {userData.email}</p>
                   </div>
                 </div>
@@ -80,7 +83,7 @@ const DropdownMenu = () => {
               <>
                 <Button
                   type="button"
-                  className="w-full bg-white py-2 px-3 rounded hover:shadow text-center cursor-pointer"
+                  className="w-full bg-white py-2 px-3 rounded hover:shdow text-center cursor-pointer"
                   onClick={() => {
                     navigate.push("/sign-in");
                   }}>
@@ -88,7 +91,7 @@ const DropdownMenu = () => {
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-primary py-2 px-3 rounded hover:shadow text-center cursor-pointer"
+                  className="w-full bg-primary py-2 px-3 rounded hover:shdow text-center cursor-pointer"
                   onClick={() => {
                     navigate.push("/sign-up");
                   }}>

@@ -12,6 +12,7 @@
   --gray100: #f3f4f6;
   --gray200: #e5e7eb;
   --red500: #fb2c36;
+  --customBackground: #f9fafc;
 }
 
 :root[data-theme="light"] {
@@ -25,19 +26,21 @@
   --gray100: #f3f4f6;
   --gray200: #e5e7eb;
   --red500: #fb2c36;
+  --customBackground: #f9fafc;
 }
 
 :root[data-theme="dark"] {
   --background: #01161e;
   --foreground: #ededed;
   --textColor: #ededed;
-  --primary: #1a6a8a; /* Lighter for dark mode readability */
+  --primary: #1a6a8a;
   --secondary: #82a8ba;
   --accent: #8bb8e8;
   --gray50: #2d3748;
   --gray100: #4a5568;
   --gray200: #718096;
   --red500: #fc555e;
+  --customBackground: #363a3d;
 }
 
 @theme inline {
@@ -51,14 +54,15 @@
   --color-gray100: var(--gray100);
   --color-gray200: var(--gray200);
   --color-red500: var(--red500);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-customBackground: var(--customBackground);
+  --font-sans: Inter, sans-serif;
+  --font-mono: monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter);
+  font-family: var(--font-sans);
 }
 
 @layer utilities {
@@ -71,13 +75,9 @@ body {
   .center-col {
     @apply flex flex-col justify-center items-center;
   }
-  .shadow {
+  .shdow {
     @apply shadow-[0px_4px_8px_rgba(0,0,0,0.1)];
   }
-
-  /* .font-inter {
-    font-family: var(--font-inter);
-  } */
 }
 
 input[type="checkbox"] {

@@ -66,7 +66,7 @@ const SignUp = () => {
       <form
         action=""
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col bg-white h-fit p-10 rounded shadow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
+        className="flex flex-col bg-white h-fit p-10 rounded shdow w-full max-w-md sm:max-w-lg lg:max-w-2xl space-y-5">
         <h1 className="text-primary center font-bold text-2xl sm:text-3xl">
           Create a free account
         </h1>
@@ -244,7 +244,7 @@ const SignUp = () => {
         {/* Display Firebase errors */}
         {/* sign up button */}
         <Button
-          className="w-full bg-primary center rounded p-3 hover:shadow-[0px_4px_8px_#598392] cursor-pointer"
+          className="w-full bg-primary center rounded p-3 hover:shdow-[0px_4px_8px_#598392] cursor-pointer"
           onClick={() => {}}>
           {" "}
           {isLoading ? (

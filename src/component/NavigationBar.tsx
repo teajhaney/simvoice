@@ -8,7 +8,7 @@ import { navigationItems } from "@/contants";
 import { useDropdownMenuStore } from "@/stores/dropdownMenuStore";
 import { useAuthStore } from "@/stores/authStore"; // Import the auth store
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { firebaseSignOut } from "@/lib/authFunctions";
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
@@ -21,9 +21,25 @@ const NavigationBar = () => {
   const { user, userData, loading } = useAuthStore((state) => state);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const { theme, toggleTheme } = useThemeStore((state) => state);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // Handle outside click to close the menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <nav className="bg-background h-14 shadow text-textColor">
+    <nav className="bg-background h-14 shdow text-textColor">
       <div className="appMarginX flex gap-10  items-center max-md:justify-between h-full ">
         <div className="" onClick={() => navigate.push("/")}>
           <p className="text-2xl font-bold text-primary">Simvoice</p>
@@ -37,7 +53,7 @@ const NavigationBar = () => {
                   className={`cursor-pointer font-medium text-md  pb-1 ${
                     pathname === navigationItem.link
                       ? " text-primary  font-black"
-                      : "text-textColor "
+                      : "text-textColor"
                   }`}>
                   {navigationItem.label}
                 </li>
@@ -55,7 +71,9 @@ const NavigationBar = () => {
                     <p> Hi, {userData.firstName || user.email}</p>
                     <MdKeyboardArrowDown />
                     {isOpenMenu && (
-                      <div className="absolute bg-background index-x-0 w-60 rounded  p-2 shadow -bottom-40 right-0 flex flex-col gap-2 text-textColor z-100">
+                      <div
+                        ref={menuRef}
+                        className="absolute bg-background index-x-0 w-60 rounded  p-2 shdow -bottom-40 right-0 flex flex-col gap-2 text-textColor z-100">
                         <div className="flex items-center gap-2 ">
                           <Image
                             src="/images/profile-placeholder.jpeg"
@@ -105,13 +123,13 @@ const NavigationBar = () => {
                 <>
                   <Button
                     type="button"
-                    className=" cursor-pointer border border-gray200 py-2 px-3 rounded hover:shadow "
+                    className=" cursor-pointer border border-gray200 py-2 px-3 rounded hover:shdow "
                     onClick={() => navigate.push("/sign-in")}>
                     <p className="">Sign In</p>
                   </Button>
                   <Button
                     type="button"
-                    className="cursor-pointer bg-primary py-2 px-3 rounded hover:shadow "
+                    className="cursor-pointer bg-primary py-2 px-3 rounded hover:shdow "
                     onClick={() => navigate.push("/sign-up")}>
                     <p className="text-white">Sign Up</p>
                   </Button>

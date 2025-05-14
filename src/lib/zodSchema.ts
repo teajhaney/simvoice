@@ -26,3 +26,23 @@ export const signUpSchema = signInSchema
 export const forgetPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
+
+// Define the validation schema using Zod
+
+
+
+
+export const invoiceFormSchema = z.object({
+  clientName: z.string().min(1),
+  clientEmail: z.string().email(),
+  invoiceNumber: z.string().min(1),
+  date: z.string(),
+  dueDate: z.string(),
+  items: z.array(
+    z.object({
+      description: z.string().min(1),
+      quantity: z.number().min(1),
+      price: z.number().min(0.01),
+    })
+  ),
+});

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppInitializer } from "@/component";
 import { Toaster } from "react-hot-toast";
+
 import { ThemeWrapper } from "@/component";
 
 const geistSans = Geist({
@@ -31,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -58,7 +59,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning>
         <AppInitializer />
+
         <ThemeWrapper>{children}</ThemeWrapper>
+
         <Toaster />
       </body>
     </html>
