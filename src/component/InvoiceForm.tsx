@@ -10,10 +10,12 @@ import { useAuthStore } from "@/stores/authStore";
 import { generatePDF, saveInvoiceToFirestore } from "@/lib/invoiceFunction";
 import toast from "react-hot-toast";
 import { Input, InputTextArea } from "@/component";
+import { invoiceLabelStyles } from "@/styles";
 
 type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
 
 export default function InvoiceForm() {
+  const currency = "NGN";
   const { user } = useAuthStore((state) => state); // Your custom auth hook
   const {
     register,
@@ -29,6 +31,27 @@ export default function InvoiceForm() {
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
+
+  const subtotal = fields.reduce((total, _, index) => {
+    const quantity = watch(`items.${index}.quantity`) || 0;
+    const rate = watch(`items.${index}.rate`) || 0;
+    return total + quantity * rate;
+  }, 0);
+
+  // Watch for discount, tax, shipping, parse as numbers, default to 0 if empty
+  const discount = parseFloat(String(watch("discount") || "0"));
+  const tax = parseFloat(String(watch("tax") || "0"));
+  const shippingFee = parseFloat(String(watch("shippingFee") || "0"));
+  // Calculate total: subtotal + tax + shipping - discount (all based on subtotal)
+  const total =
+    subtotal +
+    (subtotal * tax) / 100 -
+    (subtotal * discount) / 100 +
+    shippingFee;
+	//amount paid 
+	const amountPaid = parseFloat(String(watch("amountPaid") || "0"));
+  // Calculate balance due
+  const balanceDue = total - amountPaid;
 
   const onSubmit = async (data: InvoiceFormData) => {
     if (!user) return;
@@ -73,7 +96,7 @@ export default function InvoiceForm() {
         </div>
       </div>
       {/* flex 2 */}
-      <div className="flex flex-col md:flex-row  md:items-center md:justify-between gap-3  ">
+      <div className="flex flex-col md:flex-row  md:items-center  gap-3  ">
         {/* div 1 */}
         <div className="basis-7/12">
           <InputTextArea
@@ -106,16 +129,16 @@ export default function InvoiceForm() {
           </div>
         </div>
         {/* div 2 */}
-        <div className="basis-2/12 space-y-3 max-sm:self-end ">
+        <div className="basis-5/12 space-y-3 max-sm:self-end ">
           <Input
             id="date"
             label="Date"
             type="date"
             register={register}
             errors={errors}
+            labelClassName="text-end"
             placeholder="#"
             divClassName="!flex !flex-row"
-            labelClassName="!w-25"
           />
           <Input
             id="paymentTerm"
@@ -123,9 +146,9 @@ export default function InvoiceForm() {
             type="number"
             register={register}
             errors={errors}
+            labelClassName="text-end"
             placeholder="#"
             divClassName="!flex !flex-row"
-            labelClassName="!w-25"
             className="no-spinner"
           />
           <Input
@@ -134,9 +157,9 @@ export default function InvoiceForm() {
             type="date"
             register={register}
             errors={errors}
+            labelClassName="text-end"
             placeholder="#"
             divClassName="!flex !flex-row"
-            labelClassName="!w-25"
           />
           <Input
             id="poNumber"
@@ -144,18 +167,18 @@ export default function InvoiceForm() {
             type="number"
             register={register}
             errors={errors}
+            labelClassName="text-end"
             placeholder="#"
             divClassName="!flex !flex-row"
-            labelClassName="!w-25"
             className="no-spinner"
           />
         </div>
       </div>
-      <div className="bg-black text-accent rounded w-full max-md:hidden flex py-2 px-3 ">
-        <p className="w-full basis-6/12">Item</p>
-        <p className="w-full basis-2/12">Quantity</p>
-        <p className="w-full basis-2/12">Rate</p>
-        <p className="w-full basis-2/12 text-center">Amount</p>
+      <div className="bg-black text-accent rounded w-full max-md:hidden flex py-2 px-3 gap-5">
+        <p className="basis-6/12">Item</p>
+        <p className="basis-2/12 text-end">Quantity</p>
+        <p className="basis-2/12 text-end">Rate ({currency})</p>
+        <p className="basis-2/12 text-end">Amount</p>
       </div>
       <div className="flex flex-col gap-2 max-md:rounded max-md:border max-md:border-gray200 max-md:p-2">
         {fields.map((field, index) => {
@@ -166,7 +189,7 @@ export default function InvoiceForm() {
           return (
             <div
               key={field.id}
-              className="group flex items-center gap-2 relative">
+              className="group flex flex-col md:flex-row md:items-center gap-5 ">
               <Input
                 labelClassName="!hidden"
                 divClassName="!w-full !basis-6/12"
@@ -176,37 +199,35 @@ export default function InvoiceForm() {
                 errors={errors}
                 placeholder="Description of items/service"
               />
-              <Input
-                labelClassName="!hidden"
-                divClassName="!w-full !basis-2/12"
-                id={`items.${index}.quantity`}
-                type="number"
-                register={register}
-                errors={errors}
-                className="no-spinner"
-              />
-              <Input
-                labelClassName="!hidden"
-                divClassName="!w-full !basis-2/12"
-                id={`items.${index}.rate`}
-                type="number"
-                register={register}
-                errors={errors}
-                className="no-spinner"
-              />
-              <div className="basis-2/12  w-full">
-                {" "}
-                <p className="basis-2/12 text-sm text-center">
-                  NGN {amount.toFixed(2)}
-                </p>
+              <div className="basis-6/12 w-full flex gap-5 items-center relative">
+                <Input
+                  labelClassName="!hidden"
+                  divClassName="!w-full "
+                  id={`items.${index}.quantity`}
+                  type="number"
+                  register={register}
+                  errors={errors}
+                  className="no-spinner text-end"
+                />
+                <Input
+                  labelClassName="!hidden"
+                  divClassName="!w-full "
+                  id={`items.${index}.rate`}
+                  type="number"
+                  register={register}
+                  errors={errors}
+                  className="no-spinner text-end"
+                />
+                <div className="w-full text-end text-sm">
+                  {currency} {amount.toFixed(2)}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 hidden group-hover:flex text-red500 text-lg">
+                  x
+                </button>
               </div>
-
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="absolute right-0 top-1/2 -translate-y-1/2 hidden group-hover:flex text-customGreen text-lg">
-                x
-              </button>
             </div>
           );
         })}
@@ -216,6 +237,96 @@ export default function InvoiceForm() {
           onClick={() => append({ description: "", quantity: 1, rate: 0 })}>
           + Add Item
         </button>
+      </div>
+
+      {/* flex 3 */}
+      <div className="flex flex-col md:flex-row  gap-5">
+        {/* 1 */}
+        <div className="basis-7/12 space-y-5 w-full">
+          <InputTextArea
+            id="notes"
+            type="text"
+            label="Notes"
+            placeholder="Notes- any relevant information not already covered"
+            register={register}
+            errors={errors}
+            divClassName="w-full"
+          />
+          <InputTextArea
+            id="termsAndConditions"
+            type="text"
+            label="Terms And Conditions"
+            placeholder="Terms and conditions applied"
+            register={register}
+            errors={errors}
+            divClassName="w-full"
+          />
+        </div>
+        {/* 2 */}
+        <div className="basis-5/12 space-y-2">
+          <div className="flex  justify-between items-center">
+            <h1 className={`${invoiceLabelStyles} text-end`}>Sub Total</h1>
+            <p className="block text-sm lg:text-md text-primary text-end  w-full px-2 py-2">
+              {currency} {subtotal.toFixed(2)}
+            </p>
+          </div>
+          <Input
+            id="discount"
+            label="Discount (%)"
+            type="number"
+            register={register}
+            errors={errors}
+            placeholder="%"
+            className="no-spinner"
+            divClassName="!flex !flex-row"
+            labelClassName="text-end"
+          />
+          <Input
+            id="tax"
+            label="Tax (%)"
+            type="number"
+            register={register}
+            errors={errors}
+            placeholder="%"
+            className="no-spinner"
+            divClassName="!flex !flex-row"
+            labelClassName="text-end"
+          />
+          <Input
+            id="shippingFee"
+            label={`shipping (${currency})`}
+            type="number"
+            register={register}
+            errors={errors}
+            placeholder={currency}
+            className="no-spinner"
+            divClassName="!flex !flex-row"
+            labelClassName="text-end"
+          />
+          <div className="flex  justify-between items-center">
+            <h1 className={`${invoiceLabelStyles} text-end`}>Total</h1>
+            <p className="block text-sm lg:text-md text-primary text-end w-full px-2 py-2">
+              {currency} {total.toFixed(2)}
+            </p>
+          </div>
+          <Input
+            id="amountPaid"
+            label={`Amount paid (${currency})`}
+            type="number"
+            register={register}
+            errors={errors}
+            placeholder={currency}
+            className="no-spinner"
+            divClassName="!flex !flex-row"
+            labelClassName="text-end"
+          />
+          <div className="flex  justify-between items-center">
+            <h1 className={`${invoiceLabelStyles} text-end`}>Balance due</h1>
+            <p className="block text-sm lg:text-md text-primary text-end w-full px-2 py-2">
+              {currency} {balanceDue.toFixed(2)}
+            </p>
+          </div>
+        </div>
       </div>
     </form>
   );
