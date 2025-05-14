@@ -3,7 +3,7 @@ import {
   invoiceInputDiv,
   invoiceInputStyles,
   invoiceLabelStyles,
-  tedtareaInputDiv,
+  textareaInputDiv,
   textareaLabelStyles,
   textareaInputStyles,
 } from "@/styles";
@@ -30,8 +30,8 @@ export const Input = ({
   register,
   errors,
   placeholder,
-	className,
-	labelClassName,
+  className,
+  labelClassName,
 
   divClassName,
 }: InputProps) => {
@@ -53,20 +53,21 @@ export const Input = ({
   );
 };
 
-
 export const InputTextArea = ({
   id,
   label,
   register,
   errors,
   placeholder,
-	className,
+  className,
   labelClassName,
   divClassName,
 }: InputProps) => {
   return (
-    <div className={`${tedtareaInputDiv} ${divClassName}`}>
-      <label htmlFor={id} className={`${textareaLabelStyles} ${labelClassName}`}>
+    <div className={`${textareaInputDiv} ${divClassName}`}>
+      <label
+        htmlFor={id}
+        className={`${textareaLabelStyles} ${labelClassName}`}>
         {label}
       </label>
       <textarea
@@ -74,9 +75,29 @@ export const InputTextArea = ({
         placeholder={placeholder}
         {...register(id)}
         className={`${textareaInputStyles} ${
-          errors?.[id]  ? "border border-red500" : ""
+          errors?.[id] ? "border border-red500" : ""
         }  ${className} resize-none`}
       />
+    </div>
+  );
+};
+
+export const InputFile = ({ id, register, errors }: InputProps) => {
+  return (
+    <div className="bg-gray100 w-50 h-20">
+      <label
+        className={`center text-xs cursor-pointer bg-gray200 rounded px-4 py-2 text-center w-full h-full ${
+          errors?.[id] ? "border border-red500" : ""
+        }`}>
+        Upload Logo
+        <input
+          type="file"
+          {...register("logo")}
+          id={id}
+          accept="image/*"
+          className="hidden"
+        />
+      </label>
     </div>
   );
 };

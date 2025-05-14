@@ -10,10 +10,6 @@ import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  errorStyles,
-  inputDiv,
-  inputStyles,
-  lableStyles,
   LooadingSpinner,
 } from "@/util/utils";
 import { firebaseSignIn, firebaseSignInWithGoogle } from "@/lib/authFunctions";
@@ -21,6 +17,7 @@ import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import toast from "react-hot-toast";
+import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
 
 ////
 
@@ -87,7 +84,7 @@ const SignIn = () => {
         <p className="center text-accent">Welcome back</p>
         {/* email */}
         <div className={inputDiv}>
-          <label htmlFor="email" className={lableStyles}>
+          <label htmlFor="email" className={labelStyles}>
             Email
           </label>
           <div className="relative">
@@ -110,14 +107,14 @@ const SignIn = () => {
         {/* password */}
         <div className={inputDiv}>
           <div className="flex justify-between">
-            <label htmlFor="email" className={lableStyles}>
+            <label htmlFor="email" className={labelStyles}>
               Passoword
             </label>
             <p
               onClick={() => {
                 navigate.push("/forget-password");
               }}
-              className={clsx(lableStyles, "text-accent cursor-pointer")}>
+              className={clsx(labelStyles, "text-accent cursor-pointer")}>
               Forget password?
             </p>
           </div>
@@ -160,7 +157,7 @@ const SignIn = () => {
           />
           <label
             htmlFor="keepLoggedIn"
-            className={clsx(lableStyles, "text-accent")}>
+            className={clsx(labelStyles, "text-accent")}>
             Keep me logged in
           </label>
         </div>
@@ -171,8 +168,7 @@ const SignIn = () => {
         {/* sign in button */}
         <Button
           type="submit"
-          className="w-full bg-primary center rounded p-3 hover:shdow-[0px_4px_8px_#598392] cursor-pointer"
-          onClick={() => {}}>
+          className="w-full bg-primary center rounded p-3 hover:shdow-[0px_4px_8px_#598392] cursor-pointer">
           {" "}
           {isLoading ? (
             <LooadingSpinner className="border-white h-6 w-6 border-dashed border-2" />

@@ -10,10 +10,7 @@ import { Button } from "@/component";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  errorStyles,
-  inputDiv,
-  inputStyles,
-  lableStyles,
+ 
   LooadingSpinner,
 } from "@/util/utils";
 import { firebaseSignUp } from "@/lib/authFunctions";
@@ -22,6 +19,7 @@ import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import { IoPersonOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
 //////
 
 type SignupFormData = z.infer<typeof signUpSchema>;
@@ -76,7 +74,7 @@ const SignUp = () => {
         {/* first name and last name */}
         <div className="flex flex-col gap-5 lg:flex-row">
           <div className={clsx(inputDiv, "w-full")}>
-            <label htmlFor="email" className={lableStyles}>
+            <label htmlFor="email" className={labelStyles}>
               First Name
             </label>
             <div className="relative">
@@ -99,7 +97,7 @@ const SignUp = () => {
             )}
           </div>
           <div className={clsx(inputDiv, "w-full")}>
-            <label htmlFor="lastName" className={lableStyles}>
+            <label htmlFor="lastName" className={labelStyles}>
               Last Name
             </label>
             <div className="relative">
@@ -122,7 +120,7 @@ const SignUp = () => {
         </div>
         {/* email */}
         <div className={inputDiv}>
-          <label htmlFor="email" className={lableStyles}>
+          <label htmlFor="email" className={labelStyles}>
             Email
           </label>
           <div className="relative">
@@ -144,7 +142,7 @@ const SignUp = () => {
         </div>
         {/* password */}
         <div className={inputDiv}>
-          <label htmlFor="password" className={lableStyles}>
+          <label htmlFor="password" className={labelStyles}>
             Password
           </label>
 
@@ -179,7 +177,7 @@ const SignUp = () => {
         </div>
         {/* confirm password */}
         <div className={inputDiv}>
-          <label htmlFor="confirmPassword" className={lableStyles}>
+          <label htmlFor="confirmPassword" className={labelStyles}>
             Confirm Password
           </label>
 
@@ -229,7 +227,7 @@ const SignUp = () => {
             />
             <label
               htmlFor="agreeTerms"
-              className={clsx(lableStyles, "text-accent")}>
+              className={clsx(labelStyles, "text-accent")}>
               I agree to the Terms of Service
             </label>
           </div>

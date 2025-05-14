@@ -43,43 +43,59 @@ export const forgetPasswordSchema = z.object({
 // Define the invoice validation schema using Zod
 
 export const invoiceFormSchema = z.object({
-  logo: z
-    .any()
-    .refine((file) => file instanceof File, "Logo must be a valid image file")
-    .refine((file) => {
-      if (!(file instanceof File)) return false;
-      const validTypes = ["image/png", "image/jpeg", "image/jpg"];
-      return validTypes.includes(file.type);
-    }, "Logo must be a PNG, JPEG, or JPG file")
-    .refine((file) => {
-      if (!(file instanceof File)) return false;
-      return file.size <= 5 * 1024 * 1024; // 5MB max
-    }, "Logo file size must be less than 5MB")
-    .optional(),
+  //   logo: z
+  //     .any().optional()
+  //     .refine(
+  //       (file) => file == null || file instanceof File,
+  //       "Logo must be a valid image file"
+  //     )
+  //     .refine((file) => {
+  //       if (!(file instanceof File)) return true;
+  //       const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+  //       return validTypes.includes(file.type);
+  //     }, "Logo must be a PNG, JPEG, or JPG file")
+  //     .refine((file) => {
+  //       if (!(file instanceof File)) return true;
+  //       return file.size <= 5 * 1024 * 1024; // 5MB max
+  //     }, "Logo file size must be less than 5MB"),
+
   businessName: z.string().min(1, "Business name is required"),
-  invoiceNumber: z.string().min(1, "Invoice number is required"),
+  invoiceNumber: z.coerce.number().min(1, "Invoice number is required"),
   billTo: z.string().min(1, "Bill to is required"),
-  billFrom: z.string().min(1, "Bill from is required").optional(),
+  billFrom: z.string().optional(),
   date: z.string().min(1, "Date is required"),
-  paymentTerm: z.number().optional(),
-  dueDate: z.string().optional(),
-  poNumber: z.string().optional(),
+  paymentTerm: z
+    .string()
+    .optional(),
+  dueDate: z
+    .string()
+    .optional(),
+  poNumber: z.coerce
+    .number()
+    .optional(),
   items: z
     .array(
       z.object({
         description: z.string().min(1, "Item description is required"),
-        quantity: z.number().min(1, "Quantity must be at least 1"),
-        rate: z.number().min(0, "Rate cannot be negative"),
+        quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+        rate: z.coerce.number().min(0, "Rate cannot be negative"),
       })
     )
     .min(1, "At least one item is required"),
-  notes: z.string().optional(),
-  termsAndConditions: z.string().optional(),
-  subtotal: z.number().min(0, "Subtotal cannot be negative"),
-  discount: z.number().min(0, "Discount cannot be negative").optional(),
-  tax: z.number().min(0, "Tax cannot be negative").optional(),
-  shippingFee: z.number().min(0, "Shipping fee cannot be negative").optional(),
-  amountPaid: z.number().min(0, "Amount paid cannot be negative"),
+  notes: z
+    .string()
+    .optional(),
+  
+  termsAndConditions: z
+    .string()
+    .optional(),
+
+  discount: z.coerce.number().min(0, "Discount cannot be negative").optional(),
+  tax: z.coerce.number().min(0, "Tax cannot be negative").optional(),
+  shipping: z.coerce
+    .number()
+    .optional(),
+  amountPaid: z.coerce.number().optional(),
 });
 
 export type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
