@@ -43,21 +43,6 @@ export const forgetPasswordSchema = z.object({
 // Define the invoice validation schema using Zod
 
 export const invoiceFormSchema = z.object({
-  //   logo: z
-  //     .any().optional()
-  //     .refine(
-  //       (file) => file == null || file instanceof File,
-  //       "Logo must be a valid image file"
-  //     )
-  //     .refine((file) => {
-  //       if (!(file instanceof File)) return true;
-  //       const validTypes = ["image/png", "image/jpeg", "image/jpg"];
-  //       return validTypes.includes(file.type);
-  //     }, "Logo must be a PNG, JPEG, or JPG file")
-  //     .refine((file) => {
-  //       if (!(file instanceof File)) return true;
-  //       return file.size <= 5 * 1024 * 1024; // 5MB max
-  //     }, "Logo file size must be less than 5MB"),
 
   businessName: z.string().min(1, "Business name is required"),
   invoiceNumber: z.coerce.number().min(1, "Invoice number is required"),

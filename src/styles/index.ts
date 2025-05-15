@@ -9,13 +9,13 @@ export const inputStyles =
 //invoice
 export const invoiceInputDiv = "flex flex-col gap-2 ";
 export const invoiceLabelStyles =
-  "block text-sm lg:text-md text-primary rounded hover:border hover:border-gray200 w-full px-2 py-2 ";
+  "block text-xs md:text-sm lg:text-md text-primary rounded hover:border hover:border-gray200 w-full px-2 py-2 ";
 export const invoiceInputStyles =
-  "w-full text-textColor  pl-5 border-1 border-gray200 p-2 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
+  "w-full text-textColor text-xs md:text-sm   pl-5 border-1 border-gray200 p-2 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
 
 //invoice textarea
 export const textareaInputDiv = "flex flex-col gap-2 ";
 export const textareaLabelStyles =
-  "block text-sm lg:text-md text-primary  hover:border hover:border-gray200 w-full px-2 py-2";
+  "block text-xs md:text-sm  lg:text-md text-primary  hover:border hover:border-gray200 w-full px-2 py-2";
 export const textareaInputStyles =
-  "w-full text-textColor  pl-5 border-1 border-gray200 p-2 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";
+  "w-full text-textColor text-xs md:text-sm   pl-5 border-1 border-gray200 p-2 rounded  focus:border-1 focus:outline-none focus:border-gray200 transition-colors duration-200 focus:shadow-md";

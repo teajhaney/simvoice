@@ -9,7 +9,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { saveInvoiceToFirestore } from "@/lib/invoiceFunction";
 import toast from "react-hot-toast";
 import { invoiceLabelStyles } from "@/styles";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { CurrencySelect, Input, InputTextArea } from "./Inputs";
 import Button from "./Button";
 import html2canvas from "html2canvas";
@@ -66,6 +66,7 @@ export default function InvoiceForm() {
   //submit function
   const onSubmit = async (data: InvoiceFormData) => {
     setIsSubmitting(true);
+
     try {
       if (!user?.uid) {
         toast.error(`Please log in to save invoice`);
@@ -121,7 +122,9 @@ export default function InvoiceForm() {
 
     pdf.save(`invoice_${watch("invoiceNumber") || "untitled"}.pdf`);
   };
-
+  useEffect(() => {
+    console.log("invoice error:", errors);
+  }, [errors]);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -135,7 +138,7 @@ export default function InvoiceForm() {
               <Input
                 id="invoiceNumber"
                 label="INVOICE"
-                labelClassName="!text-2xl  lg:!text-5xl font-medium"
+                labelClassName="hidden"
                 type="number"
                 register={register}
                 errors={errors}
@@ -386,14 +389,14 @@ export default function InvoiceForm() {
           type="submit"
           disabled={isSubmitting}
           className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-2xl">Save invoice</p>
+          <p className="text-xs md:text-sm  lg:text-xl">Save invoice</p>
         </Button>
 
         <Button
           type="button"
           onClick={downloadInvoiceAsPDF}
           className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-2xl">Download</p>
+          <p className="text-xs md:text-sm  lg:text-xl">Download</p>
         </Button>
         <hr className="border-b border-dotted border-primary" />
         <div className="flex flex-col items-center gap-2">
