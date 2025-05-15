@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { InvoiceForm } from "@/component";
@@ -21,8 +18,7 @@ export default function Home() {
 
   return (
     <div className=" flex flex-col bg-customBackground ">
-	
-		  <InvoiceForm />
+      <InvoiceForm />
     </div>
   );
 }

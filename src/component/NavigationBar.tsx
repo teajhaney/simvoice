@@ -33,24 +33,15 @@ const NavigationBar = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    const handleClickInside = (event: MouseEvent) => {
-      if (menuRef.current && menuRef.current.contains(event.target as Node)) {
-        setIsOpenMenu(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("mousedown", handleClickInside);
     };
   }, []);
 
   return (
     <nav className="bg-background h-14 shdow text-textColor">
       <div className="appMarginX flex gap-10  items-center max-md:justify-between h-full ">
-        <div className="" onClick={() => navigate.push("/")}>
+        <div className="cursor-pointer" onClick={() => navigate.push("/")}>
           <p className="text-2xl font-bold text-primary">Simvoice</p>
         </div>
         <div className=" md:w-full flex items-center justify-between max-md:hidden">
@@ -70,8 +61,8 @@ const NavigationBar = () => {
             ))}
           </ul>
           {/*  */}
-          {!loading && ( // Only render auth-dependent UI once loading is false
-            <div className=" flex gap-6 items-center ">
+          {!loading && ( // auth depended UI
+            <div className=" flex gap-6 items-center " ref={menuRef}>
               {user && userData ? (
                 <>
                   <div
@@ -133,13 +124,19 @@ const NavigationBar = () => {
                   <Button
                     type="button"
                     className=" cursor-pointer border border-gray200 py-2 px-3 rounded hover:shdow "
-                    onClick={() => navigate.push("/sign-in")}>
+                    onClick={() => {
+                      setIsOpenMenu(!isOpenMenu);
+                      navigate.push("/sign-in");
+                    }}>
                     <p className="">Sign In</p>
                   </Button>
                   <Button
                     type="button"
                     className="cursor-pointer bg-primary py-2 px-3 rounded hover:shdow "
-                    onClick={() => navigate.push("/sign-up")}>
+                    onClick={() => {
+                      setIsOpenMenu(!isOpenMenu);
+                      navigate.push("/sign-up");
+                    }}>
                     <p className="text-white">Sign Up</p>
                   </Button>
                 </>
@@ -148,24 +145,26 @@ const NavigationBar = () => {
           )}
         </div>
         {/* mode */}
-        <Button
-          type="button"
-          className="p-2 rounded-lg border border-gray200"
-          onClick={toggleTheme}>
-          {theme === "light" ? (
-            <MdOutlineLightMode className="text-textColor text-xl" />
-          ) : (
-            <MdLightMode className="text-textColor text-xl" />
-          )}
-        </Button>
-        {/* menu */}
-        <Button
-          className="md:hidden rounded-lg border border-gray200 p-2"
-          onClick={() => {
-            toggleMenu();
-          }}>
-          <IoMenuSharp className="text-primary text-xl font-bold" />
-        </Button>
+        <div className="flex gap-5">
+          <Button
+            type="button"
+            className="p-2 rounded-lg border border-gray200"
+            onClick={toggleTheme}>
+            {theme === "light" ? (
+              <MdOutlineLightMode className="text-textColor text-xl" />
+            ) : (
+              <MdLightMode className="text-textColor text-xl" />
+            )}
+          </Button>
+          {/* menu */}
+          <Button
+            className="md:hidden rounded-lg border border-gray200 p-2"
+            onClick={() => {
+              toggleMenu();
+            }}>
+            <IoMenuSharp className="text-primary text-xl font-bold" />
+          </Button>
+        </div>
       </div>
       {/* mobile menu */}
     </nav>

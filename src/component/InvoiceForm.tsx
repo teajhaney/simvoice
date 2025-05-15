@@ -9,8 +9,11 @@ import { useAuthStore } from "@/stores/authStore";
 import { saveInvoiceToFirestore } from "@/lib/invoiceFunction";
 import toast from "react-hot-toast";
 import { invoiceLabelStyles } from "@/styles";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { CurrencySelect, Input, InputTextArea } from "./Inputs";
+import Button from "./Button";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
 
@@ -32,6 +35,8 @@ export default function InvoiceForm() {
   });
   const currency = watch("currency") || "NGN";
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
+
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   //watching for quantity and rate change and calculating sub total
   const subtotal = fields.reduce((total, _, index) => {
@@ -63,7 +68,8 @@ export default function InvoiceForm() {
     setIsSubmitting(true);
     try {
       if (!user?.uid) {
-        throw new Error("Please sign in to save invoices");
+        toast.error(`Please log in to save invoice`);
+        throw new Error("Please sign in to save invoice");
       }
 
       // Add calculated fields to the data
@@ -85,11 +91,42 @@ export default function InvoiceForm() {
     }
   };
 
+  const downloadInvoiceAsPDF = async () => {
+    const element = invoiceRef.current;
+    if (!element) return;
+
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    const imgHeight = (pdfWidth * canvasHeight) / canvasWidth;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position -= pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfHeight;
+    }
+
+    pdf.save(`invoice_${watch("invoiceNumber") || "untitled"}.pdf`);
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="my-10  appMarginX  gap-5 grid grid-cols-1  xl:grid-cols-12">
-      <div className="xl:col-span-10  bg-background">
+      <div className="xl:col-span-10  bg-background" ref={invoiceRef}>
         <div className="space-y-5 flex flex-col p-4 text w-full">
           {/* flex 1 */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
@@ -110,7 +147,7 @@ export default function InvoiceForm() {
           {/* flex 2 */}
           <div className="flex flex-col md:flex-row  md:items-center  gap-3  ">
             {/* div 1 */}
-            <div className="basis-7/12">
+            <div className="basis-7/12 space-y-3">
               <InputTextArea
                 id="businessName"
                 type="text"
@@ -119,7 +156,7 @@ export default function InvoiceForm() {
                 errors={errors}
                 divClassName="w-8/12"
               />
-              <div className="flex flex-col gap-x-5 md:flex-row md:justify-between md:items-center w-full">
+              <div className="flex flex-col gap-x-5 space-y-3 md:flex-row md:justify-between md:items-center w-full">
                 <InputTextArea
                   id="billTo"
                   type="text"
@@ -344,14 +381,21 @@ export default function InvoiceForm() {
           </div>
         </div>
       </div>
-      <div className="xl:col-span-2 flex flex-col gap-5 max-xl:items-end  h-fit">
-        <button
+      <div className="xl:col-span-2 flex flex-col  max-xl:items-end gap-2 h-fit">
+        <Button
           type="submit"
           disabled={isSubmitting}
           className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-2xl">downlaod</p>
-        </button>
-        <hr className="border-b border-b-background" />
+          <p className="text-2xl">Save invoice</p>
+        </Button>
+
+        <Button
+          type="button"
+          onClick={downloadInvoiceAsPDF}
+          className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
+          <p className="text-2xl">Download</p>
+        </Button>
+        <hr className="border-b border-dotted border-primary" />
         <div className="flex flex-col items-center gap-2">
           <label
             htmlFor="currency"

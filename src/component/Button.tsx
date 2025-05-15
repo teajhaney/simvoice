@@ -4,12 +4,23 @@ import { ReactNode } from "react";
 interface ButtonProps {
   className: string;
   children: ReactNode;
+  disabled?: boolean;
   type?: "button" | "submit" | "reset";
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
-const Button = ({ className, children, onClick, type }: ButtonProps) => {
+const Button = ({
+  className,
+  children,
+  onClick,
+  type,
+  disabled,
+}: ButtonProps) => {
   return (
-    <button type={type} onClick={onClick} className={clsx(className)}>
+    <button
+      disabled={disabled}
+      type={type}
+      onClick={onClick}
+      className={clsx(className)}>
       {children}
     </button>
   );

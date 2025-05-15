@@ -14,18 +14,18 @@ const DropdownMenu = () => {
   const navigate = useRouter();
   const pathname = usePathname();
   const { user, userData, loading } = useAuthStore((state) => state);
+
   return (
     <div
       className={`md:hidden bg-background shdow overflow-hidden transition-all duration-300 ease-in-out text-textColor ${
         isMenuOpen ? "max-h-96" : "max-h-0"
       }`}>
       <div className="appMarginX py-4 flex flex-col gap-4">
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4" onClick={() => toggleMenu()}>
           {navigationItems.map((navigationItem, index) => (
             <Link
               key={`${navigationItem.label}-${navigationItem.link}-${index}`}
-              href={navigationItem.link}
-              onClick={() => toggleMenu()}>
+              href={navigationItem.link}>
               <li
                 className={`cursor-pointer font-medium text-md ${
                   pathname === navigationItem.link
@@ -72,6 +72,7 @@ const DropdownMenu = () => {
                 <p
                   className="text-md px-3 text-red500 "
                   onClick={() => {
+                    toggleMenu();
                     firebaseSignOut();
                     navigate.push("/");
                   }}>
@@ -85,6 +86,7 @@ const DropdownMenu = () => {
                   type="button"
                   className="w-full bg-white py-2 px-3 rounded hover:shdow text-center cursor-pointer"
                   onClick={() => {
+                    toggleMenu();
                     navigate.push("/sign-in");
                   }}>
                   <p>Sign In</p>
@@ -93,6 +95,7 @@ const DropdownMenu = () => {
                   type="button"
                   className="w-full bg-primary py-2 px-3 rounded hover:shdow text-center cursor-pointer"
                   onClick={() => {
+                    toggleMenu();
                     navigate.push("/sign-up");
                   }}>
                   <p className="text-white">Sign Up</p>
