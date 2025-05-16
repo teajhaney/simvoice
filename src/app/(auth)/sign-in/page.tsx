@@ -23,7 +23,8 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	
   const {
     register,
     handleSubmit,
@@ -210,3 +211,4 @@ const SignIn = () => {
 };
 
 export default SignIn;
+

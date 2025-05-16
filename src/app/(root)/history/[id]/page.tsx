@@ -11,11 +11,13 @@ import jsPDF from "jspdf";
 import { Invoice } from "@/types/invoiceType";
 
 export default function InvoiceDetail() {
-  const { user } = useAuthStore((state) => state);
+  const { user,  } = useAuthStore((state) => state);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
-  const invoiceId = params.id as string;
+	const invoiceId = params.id as string;
+
+   
 
   useEffect(() => {
     const fetchInvoice = async () => {

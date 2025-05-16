@@ -144,33 +144,35 @@ export const InvoiceList = () => {
       )}
 
       {/* pagination */}
-      <div className="flex gap-4 px-4">
-        {/* generate buttons based on total pages */}
-        {Array.from({ length: totalPages }).map((_, index) => (
+      {displayedInvoices.length > 0 && (
+        <div className="flex gap-4 px-4">
+          {/* generate buttons based on total pages */}
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index)}
+              className={`px-4 py-2 rounded-lg font-semibold ${
+                currentPage === index
+                  ? "bg-primary text-white cursor-not-allowed"
+                  : "bg-background hover:bg-accent border border-customBackground"
+              }`}>
+              {index + 1}
+            </button>
+          ))}
+          {/* next button */}
           <button
-            key={index}
-            onClick={() => setCurrentPage(index)}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              currentPage === index
-                ? "bg-primary text-white cursor-not-allowed"
-                : "bg-background hover:bg-accent border border-customBackground"
-            }`}>
-            {index + 1}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            className={`px-4 py-2 rounded-lg font-semibold border border-customBackground ${
+              currentPage >= totalPages - 1
+                ? "bg-accent cursor-not-allowed"
+                : "bg-background hover:bg-accents"
+            }`}
+            disabled={currentPage >= totalPages - 1}>
+            {" "}
+            <IoIosArrowForward />
           </button>
-        ))}
-        {/* next button */}
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          className={`px-4 py-2 rounded-lg font-semibold border border-customBackground ${
-            currentPage >= totalPages - 1
-              ? "bg-accent cursor-not-allowed"
-              : "bg-background hover:bg-accents"
-          }`}
-          disabled={currentPage >= totalPages - 1}>
-          {" "}
-          <IoIosArrowForward />
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
