@@ -11,11 +11,13 @@ import Link from "next/link";
 import { Invoice } from "@/types/invoiceType";
 // import toast from "react-hot-toast";
 import { LooadingSpinner } from "@/util/utils";
+import { IoIosArrowForward } from "react-icons/io";
 
 export const InvoiceList = () => {
   const { user } = useAuthStore();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -55,6 +57,14 @@ export const InvoiceList = () => {
     );
   }
 
+  ///
+  const invoicePerPage = 10;
+  const totalPages = Math.ceil(invoices.length / invoicePerPage);
+
+  const startIndex = currentPage * invoicePerPage;
+  const endIndex = startIndex + invoicePerPage;
+  const displayedInvoices = invoices.slice(startIndex, endIndex);
+
   //delete handler
   const handleDelete = async (invoiceId: string) => {
     if (!user?.uid) {
@@ -78,7 +88,7 @@ export const InvoiceList = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Your Invoices</h2>
-      {invoices.length === 0 ? (
+      {displayedInvoices.length === 0 ? (
         <p className="text-red500 text-center">No invoices found</p>
       ) : (
         <div className="overflow-x-auto">
@@ -95,7 +105,7 @@ export const InvoiceList = () => {
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice) => (
+              {displayedInvoices.map((invoice) => (
                 <tr
                   key={invoice.id}
                   className="border-t hover:bg-primary/50 transition rounded-lg">
@@ -132,6 +142,35 @@ export const InvoiceList = () => {
           </table>
         </div>
       )}
+
+      {/* pagination */}
+      <div className="flex gap-4 px-4">
+        {/* generate buttons based on total pages */}
+        {Array.from({ length: totalPages }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index)}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              currentPage === index
+                ? "bg-primary text-white cursor-not-allowed"
+                : "bg-background hover:bg-accent border border-customBackground"
+            }`}>
+            {index + 1}
+          </button>
+        ))}
+        {/* next button */}
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          className={`px-4 py-2 rounded-lg font-semibold border border-customBackground ${
+            currentPage >= totalPages - 1
+              ? "bg-accent cursor-not-allowed"
+              : "bg-background hover:bg-accents"
+          }`}
+          disabled={currentPage >= totalPages - 1}>
+          {" "}
+          <IoIosArrowForward />
+        </button>
+      </div>
     </div>
   );
 };
