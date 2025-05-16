@@ -10,15 +10,15 @@ export default function Home() {
   // Show spinner only if no cached userData and still loading
   if (loading && !userData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className=" flex items-center justify-center">
         <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
       </div>
     );
   }
 
   return (
-    <div className=" flex flex-col bg-customBackground ">
+    <section className=" flex flex-col bg-customBackground ">
       <InvoiceForm />
-    </div>
+    </section>
   );
 }

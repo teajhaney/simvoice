@@ -9,7 +9,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { saveInvoiceToFirestore } from "@/lib/invoiceFunction";
 import toast from "react-hot-toast";
 import { invoiceLabelStyles } from "@/styles";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CurrencySelect, Input, InputTextArea } from "./Inputs";
 import Button from "./Button";
 import html2canvas from "html2canvas";
@@ -92,27 +92,84 @@ export default function InvoiceForm() {
     }
   };
 
-  const downloadInvoiceAsPDF = async () => {
-    const element = invoiceRef.current;
-    if (!element) return;
 
-    const canvas = await html2canvas(element, { scale: 2 });
+//download pdf
+const downloadInvoiceAsPDF = async () => {
+  const element = invoiceRef.current;
+  if (!element) {
+    toast.error("Invoice element not found");
+    return;
+  }
+
+  // Create a hidden container to clone the invoice
+  const cloneContainer = document.createElement("div");
+  cloneContainer.style.position = "absolute";
+  cloneContainer.style.left = "-9999px"; // Render off-screen
+  cloneContainer.style.width = "768px"; // Simulate md breakpoint (Tailwind's md is 768px)
+  cloneContainer.style.padding = "16px"; // Match p-4
+  cloneContainer.style.backgroundColor = "#fff"; // Ensure white background
+  document.body.appendChild(cloneContainer);
+
+  // Clone the invoice content
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.classList.remove(
+    "grid-cols-1",
+    "max-md:rounded",
+    "max-md:border",
+    "max-md:border-gray200",
+    "max-md:p-2"
+  );
+  clone.classList.add("xl:grid-cols-12"); // Enforce xl:grid-cols-12 for layout
+  clone
+    .querySelectorAll(".max-md\\:hidden")
+    .forEach((el) => el.classList.remove("max-md:hidden"));
+  clone.querySelectorAll(".max-md\\:flex-col").forEach((el) => {
+    el.classList.remove("max-md:flex-col");
+    el.classList.add("md:flex-row", "flex-row");
+  });
+  clone
+    .querySelectorAll(".max-md\\:self-end")
+    .forEach((el) => el.classList.remove("max-md:self-end"));
+  clone
+    .querySelectorAll(".md\\:flex-row")
+    .forEach((el) => el.classList.add("flex-row"));
+  clone
+    .querySelectorAll(".md\\:items-center")
+    .forEach((el) => el.classList.add("items-center"));
+  clone
+    .querySelectorAll(".md\\:justify-between")
+    .forEach((el) => el.classList.add("justify-between"));
+
+  // Ensure table header is visible
+  const tableHeader = clone.querySelector(".bg-black.text-accent");
+  if (tableHeader) {
+    tableHeader.classList.remove("max-md:hidden");
+    tableHeader.classList.add("flex");
+  }
+
+  cloneContainer.appendChild(clone);
+
+  try {
+    const canvas = await html2canvas(clone, {
+      scale: 2, // Higher resolution
+      width: 768, // Match md breakpoint width
+      windowWidth: 768, // Force viewport to md size
+      backgroundColor: "#ffffff", // Ensure white background
+    });
     const imgData = canvas.toDataURL("image/png");
-
     const pdf = new jsPDF("p", "mm", "a4");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const imgHeight = (pdfWidth * canvasHeight) / canvasWidth;
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
     let heightLeft = imgHeight;
     let position = 0;
 
+    // Add first page
     pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
     heightLeft -= pdfHeight;
 
+    // Add additional pages if content overflows
     while (heightLeft > 0) {
       position -= pdfHeight;
       pdf.addPage();
@@ -121,7 +178,14 @@ export default function InvoiceForm() {
     }
 
     pdf.save(`invoice_${watch("invoiceNumber") || "untitled"}.pdf`);
-  };
+  } catch (error) {
+    console.error("PDF generation failed:", error);
+    toast.error("Failed to generate PDF");
+  } finally {
+    // Clean up
+    document.body.removeChild(cloneContainer);
+  }
+};
   useEffect(() => {
     console.log("invoice error:", errors);
   }, [errors]);
