@@ -36,6 +36,10 @@ export interface SigninFormData {
   email: string;
   password: string;
 }
+export interface ProfileFormData {
+  firstName: string;
+  lastName: string;
+}
 
 export interface ForgetPasswordFormData {
   email: string;

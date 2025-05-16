@@ -96,12 +96,12 @@ export const InvoiceList = () => {
             <thead>
               <tr className="bg-customBackground rounded-3xl text-left text-sm font-semibold text-textColor">
                 <th className="p-4"></th>
-                <th className="p-4">Customer Name</th>
-                <th className="p-4">Reference</th>
-                <th className="p-4">Date</th>
-                <th className="p-4">Due Date</th>
-                <th className="p-4">Total</th>
-                <th className="p-4"></th>
+                <th className="p-4 text-xs lg:text-sm">Customer Name</th>
+                <th className="p-4 text-xs lg:text-sm">Reference</th>
+                <th className="p-4 text-xs lg:text-sm">Date</th>
+                <th className="p-4 text-xs lg:text-sm">Due Date</th>
+                <th className="p-4 text-xs lg:text-sm">Total</th>
+                <th className="p-4 "></th>
               </tr>
             </thead>
             <tbody>
@@ -109,27 +109,29 @@ export const InvoiceList = () => {
                 <tr
                   key={invoice.id}
                   className="border-t hover:bg-primary/50 transition rounded-lg">
-                  <td className="p-4">
+                  <td className="p-4 text-xs lg:text-sm">
                     <Link
                       href={`/history/${invoice.id}`}
                       className="inline-block bg-primary text-white px-3 py-1 rounded text-sm hover:bg-primary-dark">
                       View
                     </Link>
                   </td>
-                  <td className="p-4">{invoice.billTo}</td>
-                  <td className="p-4">#{invoice.invoiceNumber}</td>
-                  <td className="p-4">
+                  <td className="p-4 text-xs lg:text-sm">{invoice.billTo}</td>
+                  <td className="p-4 text-xs lg:text-sm">
+                    #{invoice.invoiceNumber}
+                  </td>
+                  <td className="p-4 text-xs lg:text-sm">
                     {new Date(invoice.date).toLocaleDateString()}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 text-xs lg:text-sm">
                     {invoice.dueDate
                       ? new Date(invoice.dueDate).toLocaleDateString()
                       : "-"}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 text-xs lg:text-sm">
                     {invoice.currency || "NGN"} {invoice.balanceDue?.toFixed(2)}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className="p-4 text-xs lg:text-sm text-right">
                     <button
                       onClick={() => handleDelete(invoice.id)}
                       className="inline-block bg-red500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">

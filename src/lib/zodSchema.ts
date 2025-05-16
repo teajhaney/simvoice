@@ -10,12 +10,28 @@ const strongPassword = z
     /[^A-Za-z0-9]/,
     "Password must include at least one special character"
   );
+//profile schema
+export const profileSchema = z.object({
+  firstName: z.string().min(1, "Input your first name"),
+  lastName: z.string().min(1, "Input your last name"),
+});
 
+//change password schema
+export const changePasswordSchema = z.object({
+  currentPassword: strongPassword,
+  newPassword: strongPassword,
+});
+
+
+  //sign in schema
 export const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: strongPassword,
 });
 
+
+
+//sign uo schema
 export const signUpSchema = signInSchema
   .extend({
     firstName: z
@@ -43,7 +59,6 @@ export const forgetPasswordSchema = z.object({
 // Define the invoice validation schema using Zod
 
 export const invoiceFormSchema = z.object({
-
   businessName: z.string().min(1, "Business name is required"),
   invoiceNumber: z.coerce.number().min(1, "Invoice number is required"),
   billTo: z.string().min(1, "Bill to is required"),

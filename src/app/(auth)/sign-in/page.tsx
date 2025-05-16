@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { signInSchema } from "../../../lib/zodSchema";
-import { z } from "zod";
+// import { z } from "zod";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,8 +16,9 @@ import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
+import { SigninFormData } from "@/types/authType";
 
-type SigninFormData = z.infer<typeof signInSchema>;
+// type SigninFormData = z.infer<typeof signInSchema>;
 const SignIn = () => {
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +103,7 @@ const SignIn = () => {
         {/* password */}
         <div className={inputDiv}>
           <div className="flex justify-between">
-            <label htmlFor="email" className={labelStyles}>
+            <label htmlFor="password" className={labelStyles}>
               Passoword
             </label>
             <p

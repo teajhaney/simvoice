@@ -10,14 +10,17 @@ import {
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import {
   SignupFormData,
   SigninFormData,
   ForgetPasswordFormData,
   UserData,
+  ProfileFormData,
 } from "@/types/authType";
 import { useAuthStore } from "@/stores/authStore";
+import { updatePassword } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 
 export const firebaseSignUp = async (formData: SignupFormData) => {
   try {
@@ -210,5 +213,43 @@ export const fetchUserData = async (uid: string) => {
     }
   } catch (error: any) {
     throw new Error(`Failed to fetch user data: ${error.message}`);
+  }
+};
+
+//update profile
+export const updateUserData = async (uid: string, data: ProfileFormData) => {
+  await updateDoc(doc(db, "users", uid), {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+};
+
+//change password
+
+export const changePassword = async (newPassword: string) => {
+  if (!auth.currentUser) return;
+
+  try {
+    await updatePassword(auth.currentUser, newPassword);
+    console.log("Password updated successfully");
+  } catch (error) {
+    console.error("Failed to update password", error);
+  }
+};
+
+//re authenticate
+
+
+export const reauthenticate = async (email: string, password: string) => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const credential = EmailAuthProvider.credential(email, password);
+
+  try {
+    await reauthenticateWithCredential(user, credential);
+    console.log("Reauthenticated");
+  } catch (error) {
+    console.error("Reauthentication failed", error);
   }
 };
