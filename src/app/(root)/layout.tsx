@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 	
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-customBackground">
       <NavigationBar />
       <DropdownMenu />
       {children}

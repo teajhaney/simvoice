@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-	deleteInvoice,
+  deleteInvoice,
   fetchUserInvoices,
   subscribeToUserInvoices,
 } from "@/lib/invoiceFunction";
@@ -21,7 +21,6 @@ export const InvoiceList = () => {
   useEffect(() => {
     const loadInvoices = async () => {
       if (!user?.uid) {
-        setLoading(false);
         const toast = (await import("react-hot-toast")).default;
         toast.error("Please log in to view invoices");
         return;
@@ -74,7 +73,7 @@ export const InvoiceList = () => {
       toast.error("Failed to delete invoice");
     }
   };
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <div className="text-red%00">{error}</div>;
 
   return (
     <div className="space-y-4">
@@ -83,9 +82,9 @@ export const InvoiceList = () => {
         <p className="text-red500 text-center">No invoices found</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
+          <table className="w-full border-collapse bg-background shadow-sm rounded-lg">
             <thead>
-              <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+              <tr className="bg-customBackground rounded-3xl text-left text-sm font-semibold text-textColor">
                 <th className="p-4"></th>
                 <th className="p-4">Customer Name</th>
                 <th className="p-4">Reference</th>
@@ -99,7 +98,7 @@ export const InvoiceList = () => {
               {invoices.map((invoice) => (
                 <tr
                   key={invoice.id}
-                  className="border-t hover:bg-gray-50 transition">
+                  className="border-t hover:bg-primary/50 transition rounded-lg">
                   <td className="p-4">
                     <Link
                       href={`/history/${invoice.id}`}
@@ -123,7 +122,7 @@ export const InvoiceList = () => {
                   <td className="p-4 text-right">
                     <button
                       onClick={() => handleDelete(invoice.id)}
-                      className="inline-block bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
+                      className="inline-block bg-red500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
                       Delete
                     </button>
                   </td>

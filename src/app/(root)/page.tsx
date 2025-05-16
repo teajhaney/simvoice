@@ -10,7 +10,7 @@ export default function Home() {
   // Show spinner only if no cached userData and still loading
   if (loading && !userData) {
     return (
-      <div className=" flex items-center justify-center">
+      <div className=" py-10 flex items-center justify-center">
         <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
       </div>
     );

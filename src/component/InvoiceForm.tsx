@@ -14,6 +14,7 @@ import { CurrencySelect, Input, InputTextArea } from "./Inputs";
 import Button from "./Button";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { LooadingSpinner } from "@/util/utils";
 
 type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
 
@@ -69,8 +70,9 @@ export default function InvoiceForm() {
 
     try {
       if (!user?.uid) {
-        toast.error(`Please log in to save invoice`);
-        throw new Error("Please sign in to save invoice");
+        const toast = (await import("react-hot-toast")).default;
+        toast.error("Please sign in to save invoice");
+        return;
       }
 
       // Add calculated fields to the data
@@ -79,6 +81,7 @@ export default function InvoiceForm() {
         subtotal,
         total,
         balanceDue,
+
         currency: "NGN",
       };
 
@@ -92,100 +95,99 @@ export default function InvoiceForm() {
     }
   };
 
-
-//download pdf
-const downloadInvoiceAsPDF = async () => {
-  const element = invoiceRef.current;
-  if (!element) {
-    toast.error("Invoice element not found");
-    return;
-  }
-
-  // Create a hidden container to clone the invoice
-  const cloneContainer = document.createElement("div");
-  cloneContainer.style.position = "absolute";
-  cloneContainer.style.left = "-9999px"; // Render off-screen
-  cloneContainer.style.width = "768px"; // Simulate md breakpoint (Tailwind's md is 768px)
-  cloneContainer.style.padding = "16px"; // Match p-4
-  cloneContainer.style.backgroundColor = "#fff"; // Ensure white background
-  document.body.appendChild(cloneContainer);
-
-  // Clone the invoice content
-  const clone = element.cloneNode(true) as HTMLElement;
-  clone.classList.remove(
-    "grid-cols-1",
-    "max-md:rounded",
-    "max-md:border",
-    "max-md:border-gray200",
-    "max-md:p-2"
-  );
-  clone.classList.add("xl:grid-cols-12"); // Enforce xl:grid-cols-12 for layout
-  clone
-    .querySelectorAll(".max-md\\:hidden")
-    .forEach((el) => el.classList.remove("max-md:hidden"));
-  clone.querySelectorAll(".max-md\\:flex-col").forEach((el) => {
-    el.classList.remove("max-md:flex-col");
-    el.classList.add("md:flex-row", "flex-row");
-  });
-  clone
-    .querySelectorAll(".max-md\\:self-end")
-    .forEach((el) => el.classList.remove("max-md:self-end"));
-  clone
-    .querySelectorAll(".md\\:flex-row")
-    .forEach((el) => el.classList.add("flex-row"));
-  clone
-    .querySelectorAll(".md\\:items-center")
-    .forEach((el) => el.classList.add("items-center"));
-  clone
-    .querySelectorAll(".md\\:justify-between")
-    .forEach((el) => el.classList.add("justify-between"));
-
-  // Ensure table header is visible
-  const tableHeader = clone.querySelector(".bg-black.text-accent");
-  if (tableHeader) {
-    tableHeader.classList.remove("max-md:hidden");
-    tableHeader.classList.add("flex");
-  }
-
-  cloneContainer.appendChild(clone);
-
-  try {
-    const canvas = await html2canvas(clone, {
-      scale: 2, // Higher resolution
-      width: 768, // Match md breakpoint width
-      windowWidth: 768, // Force viewport to md size
-      backgroundColor: "#ffffff", // Ensure white background
-    });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    // Add first page
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-    heightLeft -= pdfHeight;
-
-    // Add additional pages if content overflows
-    while (heightLeft > 0) {
-      position -= pdfHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-      heightLeft -= pdfHeight;
+  //download pdf
+  const downloadInvoiceAsPDF = async () => {
+    const element = invoiceRef.current;
+    if (!element) {
+      toast.error("Invoice element not found");
+      return;
     }
 
-    pdf.save(`invoice_${watch("invoiceNumber") || "untitled"}.pdf`);
-  } catch (error) {
-    console.error("PDF generation failed:", error);
-    toast.error("Failed to generate PDF");
-  } finally {
-    // Clean up
-    document.body.removeChild(cloneContainer);
-  }
-};
+    // Create a hidden container to clone the invoice
+    const cloneContainer = document.createElement("div");
+    cloneContainer.style.position = "absolute";
+    cloneContainer.style.left = "-9999px"; // Render off-screen
+    cloneContainer.style.width = "1024px"; // Simulate md breakpoint (Tailwind's md is 768px)
+    cloneContainer.style.padding = "16px"; // Match p-4
+    cloneContainer.style.backgroundColor = "#fff"; // Ensure white background
+    document.body.appendChild(cloneContainer);
+
+    // Clone the invoice content
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.classList.remove(
+      "grid-cols-1",
+      "max-md:rounded",
+      "max-md:border",
+      "max-md:border-gray200",
+      "max-md:p-2"
+    );
+    clone.classList.add("xl:grid-cols-12"); // Enforce xl:grid-cols-12 for layout
+    clone
+      .querySelectorAll(".max-md\\:hidden")
+      .forEach((el) => el.classList.remove("max-md:hidden"));
+    clone.querySelectorAll(".max-md\\:flex-col").forEach((el) => {
+      el.classList.remove("max-md:flex-col");
+      el.classList.add("md:flex-row", "flex-row");
+    });
+    clone
+      .querySelectorAll(".max-md\\:self-end")
+      .forEach((el) => el.classList.remove("max-md:self-end"));
+    clone
+      .querySelectorAll(".md\\:flex-row")
+      .forEach((el) => el.classList.add("flex-row"));
+    clone
+      .querySelectorAll(".md\\:items-center")
+      .forEach((el) => el.classList.add("items-center"));
+    clone
+      .querySelectorAll(".md\\:justify-between")
+      .forEach((el) => el.classList.add("justify-between"));
+
+    // Ensure table header is visible
+    const tableHeader = clone.querySelector(".bg-black.text-accent");
+    if (tableHeader) {
+      tableHeader.classList.remove("max-md:hidden");
+      tableHeader.classList.add("flex");
+    }
+
+    cloneContainer.appendChild(clone);
+
+    try {
+      const canvas = await html2canvas(clone, {
+        scale: 2, // Higher resolution
+        width: 1024, // Match md breakpoint width
+        windowWidth: 1024, // Force viewport to md size
+        backgroundColor: "#ffffff", // Ensure white background
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      // Add additional pages if content overflows
+      while (heightLeft > 0) {
+        position -= pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save(`invoice_${watch("invoiceNumber") || "untitled"}.pdf`);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      toast.error("Failed to generate PDF");
+    } finally {
+      // Clean up
+      document.body.removeChild(cloneContainer);
+    }
+  };
   useEffect(() => {
     console.log("invoice error:", errors);
   }, [errors]);
@@ -453,7 +455,11 @@ const downloadInvoiceAsPDF = async () => {
           type="submit"
           disabled={isSubmitting}
           className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-xs md:text-sm  lg:text-xl">Save invoice</p>
+          {isSubmitting ? (
+            <LooadingSpinner className="border-white h-8 w-8 border-dashed border-2" />
+          ) : (
+            <p className="text-xs md:text-sm  lg:text-xl">Save invoice</p>
+          )}
         </Button>
 
         <Button
