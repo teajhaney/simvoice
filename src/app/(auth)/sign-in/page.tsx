@@ -143,24 +143,11 @@ const SignIn = () => {
             <p className={errorStyles}>{errors.password.message}</p>
           )}
         </div>
-        {/* checkbox for keep me logged in */}
-        <div className="flex items-center space-x-2 text-white mt-4">
-          <input
-            type="checkbox"
-            id="keepLoggedIn"
-            name="keepLoggedIn"
-            className="w-4 h-4  rounded "
-          />
-          <label
-            htmlFor="keepLoggedIn"
-            className={clsx(labelStyles, "text-accent")}>
-            Keep me logged in
-          </label>
-        </div>
+    
+		{/* Display Firebase errors */}
         {authError && (
           <p className={errorStyles + " text-center"}>{authError}</p>
         )}{" "}
-        {/* Display Firebase errors */}
         {/* sign in button */}
         <Button
           type="submit"

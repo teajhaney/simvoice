@@ -461,7 +461,7 @@ export default function InvoiceForm() {
           {isSubmitting ? (
             <LooadingSpinner className="border-white h-8 w-8 border-dashed border-2" />
           ) : (
-            <p className="text-xs md:text-sm  lg:text-xl">Save invoice</p>
+            <p className=" md:text-sm  lg:text-xl">Save invoice</p>
           )}
         </Button>
 
@@ -469,7 +469,7 @@ export default function InvoiceForm() {
           type="button"
           onClick={downloadInvoiceAsPDF}
           className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-xs md:text-sm  lg:text-xl">Download</p>
+          <p className=" md:text-sm  lg:text-xl">Download</p>
         </Button>
         <hr className="border-b border-dotted border-primary" />
         <div className="flex flex-col items-center gap-2">

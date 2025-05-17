@@ -115,7 +115,9 @@ export default function InvoiceDetail() {
   }
 
   return (
-    <div className="my-10  bg-customBackground " id="invoice-detail">
+    <div
+      className="my-10  bg-customBackground  text-md lg:text-lg "
+      id="invoice-detail">
       <div className="appMarginX bg-background p-6 rounded-lg shadow">
         <h1 className="text-3xl font-bold mb-6">
           Invoice #{invoice.invoiceNumber}
@@ -132,9 +134,8 @@ export default function InvoiceDetail() {
               </div>
               <div className="flex w-full ">
                 <strong className="min-w-20">Bill From:</strong>
-                {invoice.billFrom && (
-                  <p className="w-full">{invoice.billFrom}</p>
-                )}
+
+                <p className="w-full">{invoice.billFrom || "N/A"}</p>
               </div>
             </div>
             <div className="basis-5/12 space-y-3 w-full flex flex-col items-end ">
@@ -144,9 +145,8 @@ export default function InvoiceDetail() {
               </div>
               <div className="flex w-full">
                 <strong className="w-full">Payment Terms:</strong>
-                {invoice.paymentTerm && (
-                  <p className="w-full">{invoice.paymentTerm} days</p>
-                )}
+
+                <p className="w-full">{invoice.paymentTerm || "N/A"} Months</p>
               </div>
               <div className="flex w-full">
                 <strong className="w-full">Due Date::</strong>
@@ -155,9 +155,8 @@ export default function InvoiceDetail() {
 
               <div className="flex w-full">
                 <strong className="w-full">PO Number:</strong>
-                {invoice.poNumber && (
-                  <p className="w-full">{invoice.poNumber}</p>
-                )}
+
+                <p className="w-full">{invoice.poNumber || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -169,30 +168,47 @@ export default function InvoiceDetail() {
           </div>
           <div className="flex flex-col gap-2">
             {invoice.items.map((item, index) => (
-              <div key={index} className="flex flex-col md:flex-row gap-5">
-                <p className="basis-6/12">{item.description}</p>
-                <p className="basis-2/12 text-end">{item.quantity}</p>
-                <p className="basis-2/12 text-end truncate overflow-hidden text-ellipsis whitespace-nowrap">
-                  {invoice.currency} {item.rate.toFixed(2).trim()}
-                </p>
-                <p className="basis-2/12 text-center">
-                  {invoice.currency} {(item.quantity * item.rate).toFixed(2)}
-                </p>
+              <div key={index} className="flex flex-col md:flex-row gap-5 max-md:border max-md:border-gray200 max-md:rounded">
+                <div className="max-md:flex w-full md:basis-6/12 max-md:justify-between">
+                  <strong className="max-md:w-full md:hidden">
+                    Description
+                  </strong>
+                  <p className="max-md:w-full md:basis-6/12">
+                    {item.description}
+                  </p>
+                </div>
+                <div className="max-md:flex w-full md:basis-2/12 max-md:justify-between">
+                  <strong className="max-md:w-full md:hidden">Quantity</strong>
+                  <p className="max-md:w-full md:basis-2/12 text-start md:text-end">
+                    {item.quantity}
+                  </p>
+                </div>
+                <div className="max-md:flex w-full md:basis-2/12 max-md:justify-between">
+                  <strong className="max-md:w-full md:hidden">Rate</strong>
+                  <p className="max-md:w-full md:basis-2/12 md:text-end truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                    {invoice.currency} {item.rate.toFixed(2).trim()}
+                  </p>
+                </div>
+                <div className="max-md:flex w-full md:basis-2/12 max-md:justify-between">
+                  <strong className="max-md:w-full md:hidden">
+                    Description
+                  </strong>
+                  <p className="max-md:w-full md:basis-2/12 md:text-center">
+                    {invoice.currency} {(item.quantity * item.rate).toFixed(2)}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
           <div className="flex flex-col md:flex-row gap-10">
             <div className="basis-9/12 space-y-3">
-              {invoice.notes && (
-                <p>
-                  <strong>Notes:</strong> {invoice.notes}
-                </p>
-              )}
-              {invoice.termsAndConditions && (
-                <p>
-                  <strong>Terms:</strong> {invoice.termsAndConditions}
-                </p>
-              )}
+              <p>
+                <strong>Notes:</strong> {invoice.notes || "N/A"}
+              </p>
+
+              <p>
+                <strong>Terms:</strong> {invoice.termsAndConditions || "N/A"}
+              </p>
             </div>
             <div className="basis-3/12 space-y-2">
               <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
@@ -201,42 +217,44 @@ export default function InvoiceDetail() {
                   {invoice.currency} {invoice.subtotal.toFixed(2)}
                 </p>
               </div>
-              {invoice.discount && (
-                <div className="flex w-full justify-between">
-                  <strong className="w-full">Discount (%)</strong>
-                  <p className="w-full">{invoice.discount}%</p>
-                </div>
-              )}
-              {invoice.tax && (
-                <div className="flex w-full justify-between">
-                  <strong className="w-full">Tax (%)</strong>
-                  <p className="w-full">{invoice.tax}%</p>
-                </div>
-              )}
-              {invoice.shipping && (
-                <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
-                  <strong className="w-full">
-                    Shistrongping ({invoice.currency})
-                  </strong>
-                  <p className="w-full">
-                    {invoice.currency} {invoice.shipping.toFixed(2)}
-                  </p>
-                </div>
-              )}
+
+              <div className="flex w-full justify-between">
+                <strong className="w-full">Discount (%)</strong>
+                <p className="w-full">{invoice.discount || "N/A"}</p>
+              </div>
+
+              <div className="flex w-full justify-between">
+                <strong className="w-full">Tax (%)</strong>
+                <p className="w-full">{invoice.tax || "N/A"}</p>
+              </div>
+
+              <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                <strong className="w-full">
+                  Shipping ({invoice.currency})
+                </strong>
+                <p className="w-full">
+                  {typeof invoice.shipping === "number"
+                    ? `${invoice.currency} ${invoice.shipping.toFixed(2)}`
+                    : "N/A"}
+                </p>
+              </div>
+
               <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
                 <strong className="w-full">Total</strong>
                 <p className="w-full">
                   {invoice.currency} {invoice.total.toFixed(2)}
                 </p>
               </div>
-              {invoice.amountPaid && (
-                <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
-                  <strong className="w-full">Amount Paid</strong>
-                  <p className="w-full">
-                    {invoice.currency} {invoice.amountPaid.toFixed(2)}
-                  </p>
-                </div>
-              )}
+
+              <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                <strong className="w-full">Amount Paid</strong>
+                <p className="w-full">
+                  {typeof invoice.shipping === "number"
+                    ? `${invoice.currency} ${invoice.amountPaid?.toFixed(2)}`
+                    : "N/A"}
+                </p>
+              </div>
+
               <div className="flex w-full justify-between truncate overflow-hidden text-ellipsis whitespace-nowrap">
                 <strong className="w-full">Balance Due</strong>
                 <p className="w-full">

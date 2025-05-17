@@ -23,42 +23,45 @@ export const InvoiceList = () => {
   const [error, setError] = useState("");
   const navigate = useRouter();
 
-  //fetchh user invoice on page load
+  //fetch user invoice on page load
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
     const loadInvoices = async () => {
-      if (!user?.uid) {
-        const toast = (await import("react-hot-toast")).default;
-        toast.error("Please log in to view invoices");
-        return;
-      }
-      const storedInvoices = localStorage.getItem(`invoices-${user.uid}`);
-      if (storedInvoices) {
-        setInvoices(JSON.parse(storedInvoices) as Invoice[]);
-      } else {
-        try {
-          setLoading(true);
-          const userInvoices = await fetchUserInvoices(user.uid);
-          setInvoices(userInvoices as Invoice[]);
+      if (user?.uid) {
+        const storedInvoices = localStorage.getItem(`invoices-${user.uid}`);
+        if (storedInvoices) {
+          setInvoices(JSON.parse(storedInvoices) as Invoice[]);
+        } else {
+          try {
+            setLoading(true);
+            const userInvoices = await fetchUserInvoices(user.uid);
+            setInvoices(userInvoices as Invoice[]);
+            localStorage.setItem(
+              `invoices-${user.uid}`,
+              JSON.stringify(userInvoices)
+            );
+          } catch (err) {
+            setError("Failed to load invoices");
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        }
+			//real time update
+        unsubscribe = subscribeToUserInvoices(user.uid, (invoices) => {
+          setInvoices(invoices);
           localStorage.setItem(
             `invoices-${user.uid}`,
-            JSON.stringify(userInvoices)
+            JSON.stringify(invoices)
           );
-        } catch (err) {
-          setError("Failed to load invoices");
-          console.error(err);
-        } finally {
-          setLoading(false);
-        }
+        });
       }
-      const unsubscribe = subscribeToUserInvoices(user.uid, (invoices) => {
-        setInvoices(invoices);
-        localStorage.setItem(`invoices-${user.uid}`, JSON.stringify(invoices));
-      });
-
-      return () => unsubscribe();
     };
 
     loadInvoices();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [user?.uid]);
 
   if (loading) {
@@ -99,7 +102,16 @@ export const InvoiceList = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Your Invoices</h2>
+      <div className="flex justify-between">
+        {" "}
+        <h2 className="text-sm lg:text-lg font-bold">Your Invoices</h2>
+        <Button
+          type="button"
+          onClick={() => navigate.push("/")}
+          className="  bg-primary rounded  p-2 cursor-pointer hover:border hover:border-primary !text-white">
+          <p className="text-xs md:text-sm  ">Create new invoice</p>
+        </Button>
+      </div>
       {displayedInvoices.length === 0 ? (
         <div className="flex flex-col items-center gap-5">
           <p className="text-red500 text-center">No invoices found</p>
@@ -162,6 +174,12 @@ export const InvoiceList = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {loading && (
+        <div className=" flex items-center justify-center">
+          <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
         </div>
       )}
 
