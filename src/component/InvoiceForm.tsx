@@ -21,6 +21,8 @@ type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
 export default function InvoiceForm() {
   const { user } = useAuthStore((state) => state);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  //react hook form
   const {
     register,
     control,
@@ -64,7 +66,7 @@ export default function InvoiceForm() {
   // Calculate balance due
   const balanceDue = total - amountPaid;
 
-  //submit function
+  //submit/save function
   const onSubmit = async (data: InvoiceFormData) => {
     setIsSubmitting(true);
 

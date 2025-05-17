@@ -11,23 +11,21 @@ import jsPDF from "jspdf";
 import { Invoice } from "@/types/invoiceType";
 
 export default function InvoiceDetail() {
-  const { user,  } = useAuthStore((state) => state);
+  const { user } = useAuthStore((state) => state);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
-	const invoiceId = params.id as string;
+  const invoiceId = params.id as string;
 
-   
-
-  useEffect(() => {
+	useEffect(() => {
+	  setLoading(true)
     const fetchInvoice = async () => {
       if (!user?.uid) {
         const toast = (await import("react-hot-toast")).default;
         toast.error("Please log in to view invoices");
         return;
-   
       }
-
+      setLoading(true);
       try {
         const invoices = await fetchUserInvoices(user.uid);
         const foundInvoice = invoices.find((inv) => inv.id === invoiceId);
@@ -143,7 +141,7 @@ export default function InvoiceDetail() {
               <div className="flex w-full">
                 <strong className="w-full">Payment Terms:</strong>
                 {invoice.paymentTerm && (
-                  <p className="w-full">{invoice.paymentTerm}</p>
+                  <p className="w-full">{invoice.paymentTerm} days</p>
                 )}
               </div>
               <div className="flex w-full">

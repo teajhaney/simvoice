@@ -28,14 +28,9 @@ const DeleteAccount = () => {
   } = useForm<DeleteAccountFormData>({
     resolver: zodResolver(deleteAccountSchema),
   });
-  //   useEffect(() => {
-  //     if (userData) {
-  //       reset({
-  //         firstName: userData.firstName || "",
-  //         lastName: userData.lastName || "",
-  //       });
-  //     }
-  //   }, [userData, reset]);
+  //
+
+  //delete handler
   const onSubmit = async (data: DeleteAccountFormData) => {
     if (!userData?.email) return;
 

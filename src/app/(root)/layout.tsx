@@ -1,5 +1,5 @@
 "use client";
-import { DropdownMenu, NavigationBar } from "@/component";
+import { DropdownMenu, NavigationBar,Footer } from "@/component";
 import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -10,7 +10,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <NavigationBar />
       <DropdownMenu />
       {children}
-      {/* <Footer /> */}
+      <Footer/>
     </div>
   );
 };

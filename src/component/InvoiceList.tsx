@@ -16,7 +16,7 @@ import { IoIosArrowForward } from "react-icons/io";
 export const InvoiceList = () => {
   const { user } = useAuthStore();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState("");
 
