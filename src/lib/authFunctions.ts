@@ -7,10 +7,11 @@ import {
   sendPasswordResetEmail,
   signInWithPopup,
   GoogleAuthProvider,
+  deleteUser,
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import {
   SignupFormData,
   SigninFormData,
@@ -238,8 +239,6 @@ export const changePassword = async (newPassword: string) => {
 };
 
 //re authenticate
-
-
 export const reauthenticate = async (email: string, password: string) => {
   const user = auth.currentUser;
   if (!user) return;
@@ -251,5 +250,34 @@ export const reauthenticate = async (email: string, password: string) => {
     console.log("Reauthenticated");
   } catch (error) {
     console.error("Reauthentication failed", error);
+  }
+};
+
+
+// delete user
+
+export const deleteAccountSecurely = async (
+  email: string,
+  password: string
+) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("No user is currently signed in.");
+
+  try {
+    // Reauthenticate first
+    const credential = EmailAuthProvider.credential(email, password);
+    await reauthenticateWithCredential(user, credential);
+
+    // Delete Firestore user data
+    await deleteDoc(doc(db, "users", user.uid));
+
+    // Delete auth account
+    await deleteUser(user);
+    console.log("User account and data deleted.");
+  } catch (error: any) {
+    if (error.code === "auth/requires-recent-login") {
+      throw new Error("Please log in again before deleting your account.");
+    }
+    throw new Error(error.message || "Failed to delete account.");
   }
 };

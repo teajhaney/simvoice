@@ -9,7 +9,7 @@ import { z } from "zod";
 
 import toast from "react-hot-toast";
 import { updateUserData } from "@/lib/authFunctions";
-import { Button, ChangePassword } from "@/component";
+import { Button, ChangePassword, DeleteAccount } from "@/component";
 import { LooadingSpinner } from "@/util/utils";
 import { useEffect, useState } from "react";
 
@@ -17,11 +17,12 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 const Account = () => {
   const { user, userData } = useAuthStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
-	  formState: { errors },
-	reset
+    formState: { errors },
+    reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -29,14 +30,14 @@ const Account = () => {
       lastName: userData?.lastName || "",
     },
   });
- useEffect(() => {
-   if (userData) {
-     reset({
-       firstName: userData.firstName || "",
-       lastName: userData.lastName || "",
-     });
-   }
- }, [userData, reset]);
+  useEffect(() => {
+    if (userData) {
+      reset({
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+      });
+    }
+  }, [userData, reset]);
   const onSubmit = async (data: ProfileFormData) => {
     if (!user?.uid) return;
     try {
@@ -123,8 +124,9 @@ const Account = () => {
             </form>
           </div>
         </div>
-		  )}
-		  <ChangePassword />
+      )}
+      <ChangePassword />
+      <DeleteAccount />
     </section>
   );
 };

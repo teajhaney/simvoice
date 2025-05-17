@@ -5,5 +5,6 @@ export { default as AppInitializer } from "./AppInitializer";
 export { default as ThemeWrapper } from "./ThemeWrapper";
 export { default as InvoiceForm } from "./InvoiceForm";
 export { default as ChangePassword } from "./ChangePassword";
+export { default as DeleteAccount } from "./DeleteAccount";
 export { InvoiceList } from "./InvoiceList";
 export { Input, InputTextArea } from "./Inputs";

@@ -21,15 +21,16 @@ export const changePasswordSchema = z.object({
   currentPassword: strongPassword,
   newPassword: strongPassword,
 });
+//change password schema
+export const deleteAccountSchema = z.object({
+  password: z.string(),
+});
 
-
-  //sign in schema
+//sign in schema
 export const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: strongPassword,
 });
-
-
 
 //sign uo schema
 export const signUpSchema = signInSchema
