@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Invoice } from "@/types/invoiceType";
+import { LooadingSpinner } from "@/util/utils";
 
 export default function InvoiceDetail() {
   const { user } = useAuthStore((state) => state);
@@ -103,7 +104,11 @@ export default function InvoiceDetail() {
   };
 
   if (loading) {
-    return <div className="text-center p-4">Loading invoice...</div>;
+	return (
+	  <div className=" flex items-center justify-center py-10">
+		<LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
+	  </div>
+	);
   }
 
   if (!invoice) {
@@ -168,7 +173,7 @@ export default function InvoiceDetail() {
           </div>
           <div className="flex flex-col gap-2">
             {invoice.items.map((item, index) => (
-              <div key={index} className="flex flex-col md:flex-row gap-5 max-md:border max-md:border-gray200 max-md:rounded">
+              <div key={index} className="flex flex-col md:flex-row gap-5 max-md:border max-md:border-gray200 max-md:rounded max-md:p-2">
                 <div className="max-md:flex w-full md:basis-6/12 max-md:justify-between">
                   <strong className="max-md:w-full md:hidden">
                     Description

@@ -47,7 +47,7 @@ export const InvoiceList = () => {
             setLoading(false);
           }
         }
-			//real time update
+        //real time update
         unsubscribe = subscribeToUserInvoices(user.uid, (invoices) => {
           setInvoices(invoices);
           localStorage.setItem(
@@ -63,14 +63,6 @@ export const InvoiceList = () => {
       if (unsubscribe) unsubscribe();
     };
   }, [user?.uid]);
-
-  if (loading) {
-    return (
-      <div className=" flex items-center justify-center">
-        <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
-      </div>
-    );
-  }
 
   ///
   const invoicePerPage = 10;
@@ -98,20 +90,28 @@ export const InvoiceList = () => {
       toast.error("Failed to delete invoice");
     }
   };
+  {
+    if (loading)
+      <div className=" flex items-center justify-center">
+        <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
+      </div>;
+  }
   if (error) return <div className="text-red%00">{error}</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between">
-        {" "}
-        <h2 className="text-sm lg:text-lg font-bold">Your Invoices</h2>
-        <Button
-          type="button"
-          onClick={() => navigate.push("/")}
-          className="  bg-primary rounded  p-2 cursor-pointer hover:border hover:border-primary !text-white">
-          <p className="text-xs md:text-sm  ">Create new invoice</p>
-        </Button>
-      </div>
+      {displayedInvoices.length > 0 && (
+        <div className="flex justify-between">
+          {" "}
+          <h2 className="text-sm lg:text-lg font-bold">Your Invoices</h2>
+          <Button
+            type="button"
+            onClick={() => navigate.push("/")}
+            className="  bg-primary rounded  p-2 cursor-pointer hover:border hover:border-primary !text-white">
+            <p className="text-xs md:text-sm  ">Create new invoice</p>
+          </Button>
+        </div>
+      )}
       {displayedInvoices.length === 0 ? (
         <div className="flex flex-col items-center gap-5">
           <p className="text-red500 text-center">No invoices found</p>
@@ -174,12 +174,6 @@ export const InvoiceList = () => {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {loading && (
-        <div className=" flex items-center justify-center">
-          <LooadingSpinner className="border-primary h-8 w-8 border-dashed border-2" />
         </div>
       )}
 

@@ -5,7 +5,7 @@ const History = () => {
   return (
     <section className="bg-customBackground py-10">
       <div className="appMarginX bg-background rounded-lg p-5 space-y-5">
-        <h1 className="text-textColor text-sm md:text-lg lg:text-2xl font-medium">
+        <h1 className="text-textColor text-sm md:text-lg lg:text-2xl font-bold">
           History
         </h1>
         <p>
