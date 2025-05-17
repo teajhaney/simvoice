@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 import { ThemeWrapper } from "@/component";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

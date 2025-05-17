@@ -15,12 +15,6 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => set({ user }),
       setUserData: (userData) => set({ userData }),
       setLoading: (loading) => set({ loading }),
-      // Expose actions for authFunctions.ts
-      authStoreActions: {
-        setUser: (user) => set({ user }),
-        setUserData: (userData) => set({ userData }),
-        setLoading: (loading) => set({ loading }),
-      },
     }),
     {
       name: "auth-storage",

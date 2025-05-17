@@ -23,6 +23,7 @@ interface InputProps {
   divClassName?: string;
   labelClassName?: string;
   placeholder?: string;
+  max?: string;
 }
 
 export const Input = ({
@@ -34,7 +35,7 @@ export const Input = ({
   placeholder,
   className,
   labelClassName,
-
+  max,
   divClassName,
 }: InputProps) => {
   return (
@@ -43,6 +44,7 @@ export const Input = ({
         {label}
       </label>
       <input
+        max={max}
         id={id}
         placeholder={placeholder}
         type={type}

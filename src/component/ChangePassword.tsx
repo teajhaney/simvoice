@@ -36,7 +36,6 @@ const ChangePassword = () => {
       const user = auth.currentUser;
       if (!user?.email) throw new Error("User not logged in.");
 
-      // 1. Re-authenticate first
       await reauthenticate(user.email, data.currentPassword);
       await changePassword(data.newPassword);
       toast.success("password updated successfully!");

@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   deleteUser,
+  UserCredential,
 } from "firebase/auth";
 
 import { auth, db } from "./firebase";
@@ -19,11 +20,15 @@ import {
   UserData,
   ProfileFormData,
 } from "@/types/authType";
-import { useAuthStore } from "@/stores/authStore";
+
 import { updatePassword } from "firebase/auth";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { useAuthStore } from "@/stores/authStore";
 
-export const firebaseSignUp = async (formData: SignupFormData) => {
+//sign up
+export const firebaseSignUp = async (
+  formData: SignupFormData
+): Promise<UserCredential> => {
   try {
     const { email, password, firstName, lastName } = formData;
     // Create user with Firebase authentication
@@ -43,10 +48,8 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
       };
       await setDoc(doc(db, "users", user.uid), userData);
       // Update Zustand store with user data
-      useAuthStore
-        .getState()
-        .authStoreActions.setUserData(userData as UserData);
-      useAuthStore.getState().authStoreActions.setUser(user);
+      useAuthStore.getState().setUserData(userData as UserData);
+      useAuthStore.getState().setUser(user);
     } catch (firestoreError: any) {
       console.error(
         "Firestore error:",
@@ -55,7 +58,7 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
       );
       throw new Error(`Failed to save user data: ${firestoreError.message}`);
     }
-    return user; // to be used later when needed
+    return userCredential; // to be used later when needed
   } catch (error: any) {
     switch (error.code) {
       case "auth/email-already-in-use":
@@ -76,25 +79,30 @@ export const firebaseSignUp = async (formData: SignupFormData) => {
 
 ///sign in
 
-export const firebaseSignIn = async (formData: SigninFormData) => {
+export const firebaseSignIn = async (
+  formData: SigninFormData
+): Promise<UserCredential> => {
   try {
     const { email, password } = formData;
     // Login user with Firebase authentication
+
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+
     const user = userCredential.user;
     // Fetch and store user data
     try {
       const data = await fetchUserData(user.uid);
-      useAuthStore.getState().authStoreActions.setUserData(data as UserData);
-      useAuthStore.getState().authStoreActions.setUser(user);
+      useAuthStore.getState().setUserData(data as UserData);
+      useAuthStore.getState().setUser(user);
     } catch (error: any) {
       console.error("Error fetching user data:", error);
       throw new Error(`Failed to fetch user data: ${error.message}`);
     }
+    return userCredential;
   } catch (error: any) {
     switch (error.code) {
       case "auth/user-not-found":
@@ -114,8 +122,8 @@ export const firebaseSignIn = async (formData: SigninFormData) => {
 export const firebaseSignOut = async () => {
   try {
     await signOut(auth);
-    useAuthStore.getState().authStoreActions.setUser(null);
-    useAuthStore.getState().authStoreActions.setUserData(null);
+    useAuthStore.getState().setUser(null);
+    useAuthStore.getState().setUserData(null);
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -175,14 +183,12 @@ export const firebaseSignInWithGoogle = async () => {
         "Created new user document in Firestore for Google Sign-In user:",
         user.uid
       );
-      useAuthStore
-        .getState()
-        .authStoreActions.setUserData(userData as UserData);
+      useAuthStore.getState().setUserData(userData as UserData);
     } else {
       const data = await fetchUserData(user.uid);
-      useAuthStore.getState().authStoreActions.setUserData(data as UserData);
+      useAuthStore.getState().setUserData(data as UserData);
     }
-    useAuthStore.getState().authStoreActions.setUser(user);
+    useAuthStore.getState().setUser(user);
     return {
       success: true,
       user,
@@ -226,7 +232,6 @@ export const updateUserData = async (uid: string, data: ProfileFormData) => {
 };
 
 //change password
-
 export const changePassword = async (newPassword: string) => {
   if (!auth.currentUser) return;
 
@@ -252,7 +257,6 @@ export const reauthenticate = async (email: string, password: string) => {
     console.error("Reauthentication failed", error);
   }
 };
-
 
 // delete user
 

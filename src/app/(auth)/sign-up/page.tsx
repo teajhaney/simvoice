@@ -15,7 +15,6 @@ import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
 import { IoPersonOutline } from "react-icons/io5";
-import toast from "react-hot-toast";
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
 
 type SignupFormData = z.infer<typeof signUpSchema>;
@@ -38,16 +37,16 @@ const SignUp = () => {
 
   //sign up
   const onSubmit = async (data: SignupFormData) => {
-    setIsLoading(true);
     try {
-      await firebaseSignUp(data); // Call firebaseSignUp function with the form data
-
+      setIsLoading(true);
+      await firebaseSignUp(data);
+      const toast = (await import("react-hot-toast")).default;
       toast.success("User signed in successfully");
       navigate.push("/");
       reset();
     } catch (error: any) {
       console.error("Error submitting form:", error);
-      setAuthError(error.message); // Display Firebase error
+      setAuthError(error.message);
     } finally {
       setIsLoading(false);
     }

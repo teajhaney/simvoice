@@ -7,11 +7,11 @@ export interface AuthState {
   setUser: (user: User | null) => void;
   setUserData: (userData: UserData | null) => void;
   setLoading: (loading: boolean) => void;
-  authStoreActions: {
-    setUser: (user: User | null) => void;
-    setUserData: (userData: UserData | null) => void;
-    setLoading: (loading: boolean) => void;
-  };
+//   authStoreActions: {
+//     setUser: (user: User | null) => void;
+//     setUserData: (userData: UserData | null) => void;
+//     setLoading: (loading: boolean) => void;
+//   };
 }
 export interface DropdownMenu {
   isMenuOpen: boolean;

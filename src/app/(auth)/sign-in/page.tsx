@@ -14,7 +14,7 @@ import { firebaseSignIn, firebaseSignInWithGoogle } from "@/lib/authFunctions";
 import { CiMail, CiLock } from "react-icons/ci";
 import { SlEye } from "react-icons/sl";
 import { HiOutlineEyeSlash } from "react-icons/hi2";
-import toast from "react-hot-toast";
+
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
 import { SigninFormData } from "@/types/authType";
 
@@ -24,8 +24,8 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-	const [showPassword, setShowPassword] = useState(false);
-	
+  const [showPassword, setShowPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -37,9 +37,10 @@ const SignIn = () => {
 
   //sign
   const onSubmit = async (data: SigninFormData) => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       await firebaseSignIn(data);
+      const toast = (await import("react-hot-toast")).default;
       toast.success("User signed in successfully");
       navigate.push("/");
       reset();
@@ -55,7 +56,6 @@ const SignIn = () => {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setAuthError(null);
-    setIsGoogleLoading(false);
     try {
       await firebaseSignInWithGoogle();
       navigate.push("/");
@@ -212,4 +212,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-

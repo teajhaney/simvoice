@@ -252,6 +252,7 @@ export default function InvoiceForm() {
             <div className="basis-5/12 space-y-3 max-sm:self-end ">
               <Input
                 id="date"
+                max={new Date().toISOString().split("T")[0]}
                 label="Date"
                 type="date"
                 register={register}

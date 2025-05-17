@@ -17,16 +17,16 @@ export default function InvoiceDetail() {
   const params = useParams();
   const invoiceId = params.id as string;
 
-	useEffect(() => {
-	  setLoading(true)
+  useEffect(() => {
+    setLoading(true);
     const fetchInvoice = async () => {
       if (!user?.uid) {
         const toast = (await import("react-hot-toast")).default;
         toast.error("Please log in to view invoices");
         return;
       }
-      setLoading(true);
       try {
+        setLoading(true);
         const invoices = await fetchUserInvoices(user.uid);
         const foundInvoice = invoices.find((inv) => inv.id === invoiceId);
         if (foundInvoice) {
@@ -107,7 +107,11 @@ export default function InvoiceDetail() {
   }
 
   if (!invoice) {
-    return <div className="text-center p-4">Invoice not found.</div>;
+    return (
+      <div className="text-center p-4">
+        <p>Invoice not found.</p>
+      </div>
+    );
   }
 
   return (

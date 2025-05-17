@@ -12,6 +12,8 @@ import { Invoice } from "@/types/invoiceType";
 // import toast from "react-hot-toast";
 import { LooadingSpinner } from "@/util/utils";
 import { IoIosArrowForward } from "react-icons/io";
+import { Button } from "@/component";
+import { useRouter } from "next/navigation";
 
 export const InvoiceList = () => {
   const { user } = useAuthStore();
@@ -19,7 +21,9 @@ export const InvoiceList = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState("");
+  const navigate = useRouter();
 
+  //fetchh user invoice on page load
   useEffect(() => {
     const loadInvoices = async () => {
       if (!user?.uid) {
@@ -27,20 +31,28 @@ export const InvoiceList = () => {
         toast.error("Please log in to view invoices");
         return;
       }
-
-      setLoading(true);
-      try {
-        const userInvoices = await fetchUserInvoices(user.uid);
-        setInvoices(userInvoices as Invoice[]);
-      } catch (err) {
-        setError("Failed to load invoices");
-        console.error(err);
-      } finally {
-        setLoading(false);
+      const storedInvoices = localStorage.getItem(`invoices-${user.uid}`);
+      if (storedInvoices) {
+        setInvoices(JSON.parse(storedInvoices) as Invoice[]);
+      } else {
+        try {
+          setLoading(true);
+          const userInvoices = await fetchUserInvoices(user.uid);
+          setInvoices(userInvoices as Invoice[]);
+          localStorage.setItem(
+            `invoices-${user.uid}`,
+            JSON.stringify(userInvoices)
+          );
+        } catch (err) {
+          setError("Failed to load invoices");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
       }
-
       const unsubscribe = subscribeToUserInvoices(user.uid, (invoices) => {
         setInvoices(invoices);
+        localStorage.setItem(`invoices-${user.uid}`, JSON.stringify(invoices));
       });
 
       return () => unsubscribe();
@@ -89,7 +101,15 @@ export const InvoiceList = () => {
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Your Invoices</h2>
       {displayedInvoices.length === 0 ? (
-        <p className="text-red500 text-center">No invoices found</p>
+        <div className="flex flex-col items-center gap-5">
+          <p className="text-red500 text-center">No invoices found</p>
+          <Button
+            type="button"
+            onClick={() => navigate.push("/")}
+            className="min-w-[200px]  bg-primary rounded px-5 py-2 cursor-pointer hover:border hover:border-primary !text-white">
+            <p className="text-xs md:text-sm  lg:text-lg">Create new invoice</p>
+          </Button>
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-background shadow-sm rounded-lg">
