@@ -143,8 +143,7 @@ const SignIn = () => {
             <p className={errorStyles}>{errors.password.message}</p>
           )}
         </div>
-    
-		{/* Display Firebase errors */}
+        {/* Display Firebase errors */}
         {authError && (
           <p className={errorStyles + " text-center"}>{authError}</p>
         )}{" "}
