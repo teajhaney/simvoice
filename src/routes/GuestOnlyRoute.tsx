@@ -18,7 +18,7 @@ export const GuestOnlyRoute = ({ children }: Props) => {
     }
   }, [user, loading, router, userData]);
 
-  if (loading || user) return null;
+  if (loading || (user && userData)) return null;
 
   return <>{children}</>;
 };
