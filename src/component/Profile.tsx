@@ -1,20 +1,19 @@
 "use client";
+
+import { updateUserData } from "@/lib/authFunctions";
 import { profileSchema } from "@/lib/zodSchema";
 import { useAuthStore } from "@/stores/authStore";
 import { errorStyles, inputDiv, inputStyles, labelStyles } from "@/styles";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import toast from "react-hot-toast";
-import { updateUserData } from "@/lib/authFunctions";
 import { Button, ChangePassword, DeleteAccount } from "@/component";
 import { LooadingSpinner } from "@/util/utils";
-import { useEffect, useState } from "react";
 
 type ProfileFormData = z.infer<typeof profileSchema>;
-const Account = () => {
+const Profile = () => {
   const { user, userData } = useAuthStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,6 +45,7 @@ const Account = () => {
         firstName: data.firstName,
         lastName: data.lastName,
       });
+      const toast = (await import("react-hot-toast")).default;
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -131,4 +131,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default Profile;

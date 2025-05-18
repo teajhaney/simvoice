@@ -7,5 +7,8 @@ export { default as ThemeWrapper } from "./ThemeWrapper";
 export { default as InvoiceForm } from "./InvoiceForm";
 export { default as ChangePassword } from "./ChangePassword";
 export { default as DeleteAccount } from "./DeleteAccount";
+export { default as SignupForm } from "./SignupForm";
+export { default as Profile } from "./Profile";
+export { default as LoginForm } from "./LoginForm";
 export { InvoiceList } from "./InvoiceList";
 export { Input, InputTextArea } from "./Inputs";
