@@ -18,7 +18,6 @@ export const ProtectedRoute = ({ children }: Props) => {
     }
   }, [user, loading, router]);
 
-
   if (loading || !user) return null;
   return <>{children}</>;
 };
