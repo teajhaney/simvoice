@@ -12,7 +12,7 @@ const Footer = () => {
           <h1 className="text-xs">Developer API</h1>
         </div>
         <div className="space-y-3">
-          <h1 className="text-xs">© 2012-2025 Invoice-Generator.com</h1>
+          <h1 className="text-xs">© 2012-2025 simvoice.com</h1>
           <h1 className="text-xs">Terms of Service</h1>
           <h1 className="text-xs">Privacy Policy</h1>
           <div className="flex gap-3 items-center">
@@ -30,7 +30,7 @@ const Footer = () => {
             </div>
           </div>
           <a
-            className="text-xs text-tertiary text-center hover:underline hover:decoration-primary hover:text-primary"
+            className="text-xs text-tertiary hover:underline hover:decoration-primary hover:text-primary"
             href="https://github.com/teajhaney"
             target="_blank"
             rel="noreferrer">
