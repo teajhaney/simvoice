@@ -8,11 +8,9 @@ const History = () => {
         <h1 className="text-textColor text-sm md:text-lg lg:text-2xl font-bold">
           History
         </h1>
-        <p>
-         You can find your saved invoiced here.
-        </p>
-		  <InvoiceList />
-		  </div>
+        <p>You can find your saved invoiced here.</p>
+        <InvoiceList />
+      </div>
     </section>
   );
 };
